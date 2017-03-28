@@ -34,6 +34,8 @@
     "babel-plugin-transform-async-to-generator": "^6.8.0",
     "babel-preset-es2015-node": "^4.0.2",
     "eslint": "^3.0.0",
-    "eslint-config-default": "^0.2.0"
+    "eslint-config-default": "^0.2.0",
+    "factory-girl": "^4.2.2",
+    "tape": "^4.6.3"
   }
 }
