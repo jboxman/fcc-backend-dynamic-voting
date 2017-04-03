@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start":"DEBUG=koa* node app.js",
+    "start": "DEBUG=koa* node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -36,6 +36,9 @@
     "eslint": "^3.0.0",
     "eslint-config-default": "^0.2.0",
     "factory-girl": "^4.2.2",
-    "tape": "^4.6.3"
+    "leaked-handles": "^5.2.0",
+    "mockgoose": "^7.1.0",
+    "tape": "^4.6.3",
+    "tape-plus": "^1.0.0"
   }
 }

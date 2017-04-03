@@ -1,7 +1,10 @@
 const mongoose = require('mongoose');
 
 const pollSchema = mongoose.Schema({
-    question: String,
+    question: {
+        type: String,
+        required: true
+    },
     viewCount: Number//,
 //    answers: [answerSchema]
 });
@@ -15,4 +18,7 @@ const answerSchema = mongoose.Schema({
     voteCount: Number
 });
 
-module.exports = mongoose.model('Poll', pollSchema);
+module.exports = {
+    schema: pollSchema,
+    model: mongoose.model('Poll', pollSchema)
+};
