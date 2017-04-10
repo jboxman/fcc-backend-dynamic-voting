@@ -4,15 +4,21 @@ const Mongoose = require('mongoose').Mongoose;
 const mongoose = new Mongoose();
 mongoose.Promise = global.Promise;
 
-const pollSchema = require('../models/poll').schema;
-const Poll = mongoose.model('Poll', pollSchema);
+const Poll = require('../models/poll');
 
-const pollFactory = ({question = 'test', viewCount = 0} = {}) => {
+// Exclude any model field defaults
+const pollFactory = ({question = 'test'} = {}) => {
   return {
-    question,
-    viewCount
+    question
   }
-}
+};
+// This somehow needs to map back to a user, maybe not in this test
+const answerFactory = ({text = 'Eggs', createdBy = 0} = {}) => {
+  return {
+    text,
+    createdBy
+  }
+};
 
 // Test validations without a database connection
 // http://stackoverflow.com/questions/9222376/testing-mongoosejs-validations
@@ -20,8 +26,14 @@ const pollFactory = ({question = 'test', viewCount = 0} = {}) => {
 // Test instance methods by mocking
 // https://github.com/underscopeio/sinon-mongoose/blob/master/examples/promises/test.js
 
+/*
+Now it may be possible to test adding Poll questions.
+A Poll must have questions by default, but more can be added later.
+*/
+
 test('Poll', t => {
   const poll = new Poll(pollFactory({question: null}));
+  // err.errors contains each field name that fails?
   poll.validate((err) => {
     console.log(err);
     t.end();
