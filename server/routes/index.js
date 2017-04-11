@@ -6,6 +6,11 @@ const pollModel = require('../../models/poll');
 const answerModel = require('../../models/answer');
 
 /*
+  TODO
+  - Each payload must be wrapped in a object with meta field
+*/
+
+/*
   Add routes for
   listing polls
   reading a poll
@@ -26,11 +31,19 @@ router.get('/polls', async function(ctx, next) {
   ctx.body = polls;
 });
 
+router.post('/polls/view/:id', async function(ctx, next) {
+  return pollModel.viewPoll()
+  .then((poll) => {
+    ctx.type = 'json';
+    ctx.body = poll;
+  });
+});
+
 // add middleware to reject if request-type is not application/json?
 router.post('/polls/create', async function(ctx, next) {
   // Need to get the POST data, possibly ensure it's safe
-  const body = ctx.request.body;
-  pollModel.addPoll({})
+  const payload = ctx.request.body;
+  return pollModel.addPoll(payload)
   .then(() => ctx.status = 201)
   .catch(err => {
     ctx.body = {errors: err.errors};

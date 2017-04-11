@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 const answerSchema = require('./answer').schema;
 
+/*
+  TODO
+  - answers array cannot be empty
+*/
+
 const pollSchema = mongoose.Schema({
   question: {
     type: String,
@@ -15,7 +20,6 @@ const pollSchema = mongoose.Schema({
 });
 
 pollSchema.statics.findAllPolls = function findAllPolls() {
-  this.find({}).then((v) => console.log(v));
   return this.find({});
 }
 // We need back validation failure
@@ -35,6 +39,14 @@ pollSchema.statics.findAllPolls = function findAllPolls() {
 pollSchema.statics.addPoll = function addPoll(o) {
   // Get back err.errors on failure.
   return this.create(o);
+}
+
+pollSchema.statics.removePoll = function removePoll(id) {
+  return this.findByIdAndRemove(id).exec();
+}
+
+pollSchema.statics.viewPoll = function viewPoll(id) {
+  return this.findById(id).exec();
 }
 
 // Use pollSchema.methods.blah to allow for custom methods

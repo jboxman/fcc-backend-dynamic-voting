@@ -7,6 +7,17 @@ const setupDb = require('../../models/index');
 
 let db;
 
+/*
+  TODO
+  - Implement basic walkthrough
+  - Create several polls
+  - Find all polls
+  - View a poll
+  - Remove a poll
+  - Vote in a poll
+  - Add an answer to a poll
+*/
+
 const prepare = () => {
   const {koaApp, httpServer} = createApp();
   const request = agent(koaApp.callback());
@@ -49,14 +60,16 @@ test('app', t => {
 
   t.test('should create a poll', t => {
     const {request, httpServer} = prepare();
+    const payload = {
+      question: 'How are you?'
+    };
 
     request
     .post('/polls/create')
-    .send({})
+    .send(payload)
     .set('Accept', 'application/json')
-    .expect(200)
+    .expect(201)
     .end((err, res) => {
-      t.equal(true, true);
       httpServer.close();
       t.end(err);
     });
