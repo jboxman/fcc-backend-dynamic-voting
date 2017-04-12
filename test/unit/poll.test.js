@@ -4,7 +4,7 @@ const Mongoose = require('mongoose').Mongoose;
 const mongoose = new Mongoose();
 mongoose.Promise = global.Promise;
 
-const Poll = require('../models/poll');
+const Poll = require('../../models/poll');
 
 // Exclude any model field defaults
 const pollFactory = ({question = 'test'} = {}) => {
@@ -30,6 +30,10 @@ const answerFactory = ({text = 'Eggs', createdBy = 0} = {}) => {
 Now it may be possible to test adding Poll questions.
 A Poll must have questions by default, but more can be added later.
 */
+
+// should always include at least 1 answer
+// should always belong to a user
+// should be limited to some length, 1000 letters?
 
 test('Poll', t => {
   const poll = new Poll(pollFactory({question: null}));
