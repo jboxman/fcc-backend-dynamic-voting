@@ -1,13 +1,13 @@
 const mongoose = require('mongoose');
 
 const answerSchema = mongoose.Schema({
-  text: {
-    type: String,
-    require: true
-  },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
+  },
+  text: {
+    type: String,
+    require: true
   },
   voteCount: {
     type: Number,

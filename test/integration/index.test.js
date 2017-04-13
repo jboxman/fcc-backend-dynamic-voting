@@ -38,7 +38,6 @@ test('app', t => {
     .get('/')
     .expect(200)
     .end((err, res) => {
-      t.equal(true, true);
       httpServer.close();
       t.end(err);
     });
@@ -52,7 +51,6 @@ test('app', t => {
     .get('/polls')
     .expect(200)
     .end((err, res) => {
-      t.equal(true, true);
       httpServer.close();
       t.end(err);
     });

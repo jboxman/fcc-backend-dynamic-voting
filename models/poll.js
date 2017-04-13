@@ -8,16 +8,24 @@ const answerSchema = require('./answer').schema;
 */
 
 const pollSchema = mongoose.Schema({
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   question: {
     type: String,
+    trim: true,
     required: true
   },
   viewCount: {
     type: Number,
     default: 0
   },
-  // use validate and fn to enforce not empty, but what about message?
-  answers: [answerSchema]
+  answers: {
+    type: [answerSchema],
+    validate: ensureOneOrMoreAnswers
+  }
 });
 
 pollSchema.statics.findAllPolls = function findAllPolls() {
@@ -45,6 +53,14 @@ pollSchema.statics.viewPoll = function viewPoll(id) {
 // Use pollSchema.methods.blah to allow for custom methods
 
 module.exports = mongoose.model('Poll', pollSchema);
+
+function ensureOneOrMoreAnswers(value) {
+  console.log(value);
+  if(Array.isArray(value)) {
+    return value.length >= 1 ? true : false;
+  }
+  return false;
+}
 
 // We need back validation failure
 /*

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const router = require('koa-router')();
+const debug = require('debug')('fcc-voting');
 
 const pollModel = require('../../models/poll');
 const answerModel = require('../../models/answer');
@@ -29,6 +30,7 @@ router.get('/polls', async function(ctx, next) {
   const polls = await pollModel.findAllPolls();
   ctx.type = 'json';
   ctx.body = polls;
+  return;
 });
 
 router.post('/polls/view/:id', async function(ctx, next) {
@@ -46,9 +48,11 @@ router.post('/polls/create', async function(ctx, next) {
   return pollModel.addPoll(payload)
   .then(() => ctx.status = 201)
   .catch(err => {
+    console.log(err);
     ctx.body = {errors: err.errors};
     ctx.status = 400;
-  });
+  })
+  .catch(err => console.log(err));
 });
 
 module.exports = router;
