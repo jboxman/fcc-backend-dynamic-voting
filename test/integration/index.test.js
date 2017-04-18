@@ -5,7 +5,13 @@ const sinon = require('sinon');
 const createApp = require('../../server/app');
 const setupDb = require('../../models/index');
 
+const User = require('../../models/user');
+const Poll = require('../../models/poll');
+const Answer = require('../../models/answer');
+
 let db;
+let defaultUser;
+let defaultAnswer;
 
 /*
   TODO
@@ -25,9 +31,29 @@ const prepare = () => {
 }
 
 test('app', t => {
-  t.test('setup db', t => {
+  t.test('setup db', async function(t) {
     db = setupDb();
-    t.end();
+
+    // TODO - return Promise from setupDb() instead of abritrary setTimeout()
+    setTimeout(async function() {
+      // http://stackoverflow.com/a/28067650/6732764
+      for(c in db.collections) {
+        // (node:8376) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 2): MongoError: ns not found
+        if (db.collections[c].collectionName.indexOf('system.') == -1)
+          db.collections[c].drop();
+        else
+          db.collections[c].remove({});
+      }
+
+      defaultUser = await User.create({email: 'user@example.com'});
+      defaultAnswer = {
+        createdBy: defaultUser.get('_id').toJSON(),
+        text: 'Frank'
+      }
+      //await Answer.create({createdBy: defaultUser, answer: 'Frank'});
+
+      t.end();
+    }, 50);
   });
 
   // status, statusCode, statusType, text, type
@@ -44,7 +70,39 @@ test('app', t => {
 
   });
 
-  t.test('should get all polls', t => {
+  t.test('create and view a poll', async function(t) {
+    const {request, httpServer} = prepare();
+
+    const payload = {
+      question: 'What is your name?',
+      createdBy: {_id: defaultUser.get('_id').toJSON()},
+      answers: [defaultAnswer]
+    };
+
+    let createReq, viewReq;
+    try {
+      createReq = await request
+      .post('/polls/create')
+      .send(payload)
+      .set('Accept', 'application/json')
+      .expect(201);
+
+      viewReq = await request
+      .get(`/polls/view/${createReq.body._id}`)
+      .expect(200)
+
+      t.equal(viewReq.body.viewCount, 1, 'viewCount should equal 1');
+    }
+    catch(e) {
+      console.log(e);
+    }
+    finally {
+      httpServer.close();
+      t.end();
+    }
+  });
+
+  t.test('get all polls', t => {
     const {request, httpServer} = prepare();
 
     request
@@ -56,18 +114,20 @@ test('app', t => {
     });
   });
 
-  t.test('should create a poll', t => {
+  t.test('vote in a poll', async function(t) {
     const {request, httpServer} = prepare();
-    const payload = {
-      question: 'How are you?'
-    };
+
+    // It may be cleaner to simply do /polls/vote/:id/:answerId
+    const doc = await Poll.findOne({}).exec();
+    const test = await Poll.findOne({'answers._id': doc.answers[0]._id});
+
+    console.log(test);
 
     request
-    .post('/polls/create')
-    .send(payload)
-    .set('Accept', 'application/json')
-    .expect(201)
+    .get(`/polls/vote/${doc._id}`)
+    .expect(200)
     .end((err, res) => {
+      console.log(res.body);
       httpServer.close();
       t.end(err);
     });

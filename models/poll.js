@@ -2,16 +2,15 @@ const mongoose = require('mongoose');
 
 const answerSchema = require('./answer').schema;
 
-/*
-  TODO
-  - answers array cannot be empty
-*/
-
 const pollSchema = mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   },
   question: {
     type: String,
@@ -42,12 +41,15 @@ pollSchema.statics.removePoll = function removePoll(id) {
   return this.findByIdAndRemove(id).exec();
 }
 
-/*
-  TODO
-  - Increment view count
-*/
 pollSchema.statics.viewPoll = function viewPoll(id) {
-  return this.findById(id).exec();
+  //return this.findById(id).exec();
+  // http://stackoverflow.com/questions/16356112/mongoose-increment-with-findone
+  return this.findByIdAndUpdate(id, {$inc: {viewCount: 1}}, {new: true});
+}
+
+// Need both because we're embedding
+pollSchema.statics.vote = function vote(answerId) {
+  return this.findOne({'answers._id': { $in: [answerId]}});
 }
 
 // Use pollSchema.methods.blah to allow for custom methods
@@ -55,7 +57,6 @@ pollSchema.statics.viewPoll = function viewPoll(id) {
 module.exports = mongoose.model('Poll', pollSchema);
 
 function ensureOneOrMoreAnswers(value) {
-  console.log(value);
   if(Array.isArray(value)) {
     return value.length >= 1 ? true : false;
   }
