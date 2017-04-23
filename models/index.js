@@ -1,14 +1,11 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-const getEnv = () => process.env.NODE_ENV || 'development';
+const config = require('../config/envs');
 
-function setupDb(env = getEnv()) {
+function setupDb() {
 
-    // https://github.com/embbnux/kails/blob/master/config/database.js
-    const dbUri = `localhost/db_${env}`;
-
-    mongoose.connect(`mongodb://${dbUri}`);
+    mongoose.connect(config.mongodb.url);
 
     const db = mongoose.connection;
     db.once('open', () => {
