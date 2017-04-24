@@ -7,6 +7,10 @@ const router = new Router({
   prefix: '/polls'
 });
 
+const enforceJSON = (ctx, next) => {
+  return ctx.request.type == 'application/json' ? next() : ctx.status = 400;
+}
+
 /*
   TODO
   - Each payload must be wrapped in a object with meta field
@@ -39,7 +43,7 @@ router.get('/view/:id', async function(ctx, next) {
 });
 
 // add middleware to reject if request-type is not application/json?
-router.post('/vote', async function(ctx, next) {
+router.post('/vote', enforceJSON, async function(ctx, next) {
   const {id} = ctx.request.body;
   return pollModel.vote(id)
   .then((poll) => {
