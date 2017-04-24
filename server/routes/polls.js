@@ -38,11 +38,13 @@ router.get('/view/:id', async function(ctx, next) {
   });
 });
 
-router.get('/vote/:id', async function(ctx, next) {
-  const {id} = ctx.params;
+// add middleware to reject if request-type is not application/json?
+router.post('/vote', async function(ctx, next) {
+  const {id} = ctx.request.body;
   return pollModel.vote(id)
   .then((poll) => {
-    ctx.status = 200;
+    ctx.type = 'json';
+    ctx.body = poll;
   });
 });
 

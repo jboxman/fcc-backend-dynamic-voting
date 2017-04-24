@@ -5,9 +5,6 @@ const debug = require('debug')('fcc-voting');
 
 const pollsRouter = require('./polls');
 
-//const pollModel = require('../../models/poll');
-//const answerModel = require('../../models/answer');
-
 // Load React UI
 router.get('/', async function(ctx, next) {
   ctx.type = 'html';

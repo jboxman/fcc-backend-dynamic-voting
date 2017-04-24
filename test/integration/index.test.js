@@ -46,10 +46,20 @@ test('app', t => {
       }
 
       defaultUser = await User.create({email: 'user@example.com'});
-      defaultAnswer = {
-        createdBy: defaultUser.get('_id').toJSON(),
-        text: 'Frank'
-      }
+      defaultAnswers = [
+        {
+          createdBy: defaultUser.get('_id').toJSON(),
+          text: 'Bob'
+        },
+        {
+          createdBy: defaultUser.get('_id').toJSON(),
+          text: 'Frank'
+        },
+        {
+          createdBy: defaultUser.get('_id').toJSON(),
+          text: 'Jackie'
+        }
+      ];
       //await Answer.create({createdBy: defaultUser, answer: 'Frank'});
 
       t.end();
@@ -76,7 +86,7 @@ test('app', t => {
     const payload = {
       question: 'What is your name?',
       createdBy: {_id: defaultUser.get('_id').toJSON()},
-      answers: [defaultAnswer]
+      answers: defaultAnswers
     };
 
     let createReq, viewReq;
@@ -119,15 +129,14 @@ test('app', t => {
 
     // It may be cleaner to simply do /polls/vote/:id/:answerId
     const doc = await Poll.findOne({}).exec();
-    const test = await Poll.findOne({'answers._id': doc.answers[0]._id});
 
-    console.log(test);
-
+    // Send _id of poll answer choice 
     request
-    .get(`/polls/vote/${doc._id}`)
+    .post(`/polls/vote/`)
+    .send(doc.answers[1]._id)
+    .set('Accept', 'application/json')
     .expect(200)
     .end((err, res) => {
-      console.log(res.body);
       httpServer.close();
       t.end(err);
     });

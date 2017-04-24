@@ -49,7 +49,11 @@ pollSchema.statics.viewPoll = function viewPoll(id) {
 
 // Need both because we're embedding
 pollSchema.statics.vote = function vote(answerId) {
-  return this.findOne({'answers._id': { $in: [answerId]}});
+  // http://stackoverflow.com/questions/10522347/mongodb-update-objects-in-a-documents-array-nested-updating
+  return this.findOneAndUpdate(
+    {'answers._id': {$in: [answerId]}},
+    {$inc: {'answers.$.voteCount': 1}},
+    {new: true});
 }
 
 // Use pollSchema.methods.blah to allow for custom methods
