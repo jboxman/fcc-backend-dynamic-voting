@@ -133,7 +133,7 @@ test('app', t => {
     // Send _id of poll answer choice 
     request
     .post(`/polls/vote/`)
-    .send(doc.answers[1]._id)
+    .send({id: `${doc.answers[1]._id}`})
     .set('Accept', 'application/json')
     .expect(200)
     .end((err, res) => {
