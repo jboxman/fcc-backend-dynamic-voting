@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "DEBUG=koa* node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint server --color"
   },
   "keywords": [],
   "author": "Jason Boxman <jasonb@edseek.com>",
@@ -36,8 +37,15 @@
     "babel-plugin-syntax-async-functions": "^6.8.0",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
     "babel-preset-es2015-node": "^4.0.2",
-    "eslint": "^3.0.0",
+    "eslint": "^3.19.0",
     "eslint-config-default": "^0.2.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-babel": "^4.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-node": "^4.2.2",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-react": "^6.10.3",
+    "eslint-plugin-standard": "^3.0.1",
     "factory-girl": "^4.2.2",
     "leaked-handles": "^5.2.0",
     "mockgoose": "^7.1.0",
