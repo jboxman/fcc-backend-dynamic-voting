@@ -16,15 +16,6 @@ const enforceJSON = (ctx, next) => {
   - Each payload must be wrapped in a object with meta field
 */
 
-/*
-  Add routes for
-  listing polls
-  reading a poll
-  deleting a poll
-  adding an answer by itself
-  eventually login
-*/
-
 router.get('/', async function(ctx, next) {
   const polls = await pollModel.findAllPolls();
   ctx.type = 'json';
