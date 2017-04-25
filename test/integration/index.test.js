@@ -130,7 +130,7 @@ test('app', t => {
     // It may be cleaner to simply do /polls/vote/:id/:answerId
     const doc = await Poll.findOne({}).exec();
 
-    // Send _id of poll answer choice 
+    // Send _id of poll answer choice
     request
     .post(`/polls/vote/`)
     .send({id: `${doc.answers[1]._id}`})

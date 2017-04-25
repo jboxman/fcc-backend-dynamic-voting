@@ -6,7 +6,7 @@
   "scripts": {
     "start": "DEBUG=koa* node app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint server --color"
+    "lint": "eslint server --color ; exit 0"
   },
   "keywords": [],
   "author": "Jason Boxman <jasonb@edseek.com>",

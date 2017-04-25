@@ -2,30 +2,30 @@ const mongoose = require('mongoose');
 
 const answerSchema = require('./answer').schema;
 
-const pollSchema = mongoose.Schema({
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+const pollSchema = mongoose.Schema(
+  {
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    question: {
+      type: String,
+      trim: true,
+      required: true
+    },
+    viewCount: {
+      type: Number,
+      default: 0
+    },
+    answers: {
+      type: [answerSchema],
+      validate: ensureOneOrMoreAnswers
+    }
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  question: {
-    type: String,
-    trim: true,
-    required: true
-  },
-  viewCount: {
-    type: Number,
-    default: 0
-  },
-  answers: {
-    type: [answerSchema],
-    validate: ensureOneOrMoreAnswers
-  }
-});
+  {
+    timestamps: true
+  });
 
 pollSchema.statics.findAllPolls = function findAllPolls() {
   return this.find({});
