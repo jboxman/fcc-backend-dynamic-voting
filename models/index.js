@@ -5,14 +5,21 @@ const config = require('../config/envs');
 
 function setupDb() {
 
-    mongoose.connect(config.mongodb.url);
-
-    const db = mongoose.connection;
-    db.once('open', () => {
-        console.log('I am connected.');
+  // Return a Promise here so we can await on it later
+  return new Promise(function(resolve, reject) {
+    // If there's an error, reject with the error
+    mongoose.connect(config.mongodb.url, (err) => {
+      if(err) reject(err);
     });
 
-    return db;
+    // If the connection is successful, resolve with the database handle
+    const db = mongoose.connection;
+    db.once('open', () => {
+      console.log('I am connected.');
+      resolve(db);
+    });
+
+  });
 }
 
 module.exports = setupDb;

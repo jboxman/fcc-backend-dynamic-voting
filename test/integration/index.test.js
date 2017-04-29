@@ -31,11 +31,16 @@ const prepare = () => {
 }
 
 test('app', t => {
-  t.test('setup db', async function(t) {
-    db = setupDb();
+  t.test('setup db', function(t) {
 
-    // TODO - return Promise from setupDb() instead of abritrary setTimeout()
-    setTimeout(async function() {
+    // TODO - Discover where other UnhandledPromiseRejectionWarning is emitted
+    prepareDb().catch(() => {
+      console.log('caught');
+    });
+
+    async function prepareDb() {
+      db = await setupDb();
+
       // http://stackoverflow.com/a/28067650/6732764
       for(c in db.collections) {
         // (node:8376) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 2): MongoError: ns not found
@@ -60,10 +65,10 @@ test('app', t => {
           text: 'Jackie'
         }
       ];
-      //await Answer.create({createdBy: defaultUser, answer: 'Frank'});
 
       t.end();
-    }, 50);
+    }
+
   });
 
   // status, statusCode, statusType, text, type
@@ -124,22 +129,27 @@ test('app', t => {
     });
   });
 
-  t.test('vote in a poll', async function(t) {
+  t.test('vote in a poll', function(t) {
     const {request, httpServer} = prepare();
 
-    // It may be cleaner to simply do /polls/vote/:id/:answerId
-    const doc = await Poll.findOne({}).exec();
+    // generator experiment
+    function *getDoc() {
+      return yield Poll.findOne({}).exec();
+    }
 
-    // Send _id of poll answer choice
-    request
-    .post(`/polls/vote/`)
-    .send({id: `${doc.answers[1]._id}`})
-    .set('Accept', 'application/json')
-    .expect(200)
-    .end((err, res) => {
-      httpServer.close();
-      t.end(err);
+    const promise = getDoc().next().value;
+    promise.then(doc => {
+      request
+      .post(`/polls/vote/`)
+      .send({id: `${doc.answers[1]._id}`})
+      .set('Accept', 'application/json')
+      .expect(200)
+      .end((err, res) => {
+        httpServer.close();
+        t.end(err);
+      });
     });
+
   });
 
 });
