@@ -117,6 +117,18 @@ test('app', t => {
     }
   });
 
+  // http://stackoverflow.com/questions/19222520/populate-nested-array-in-mongoose
+  /*
+  t.test('check populate', async function(t) {
+    const doc = await Poll.findOne({}).populate({
+      path: 'createdBy'
+      }).populate({
+        path: 'answers.createdBy'
+      }).exec();
+    t.end();
+  });
+  */
+
   t.test('get all polls', t => {
     const {request, httpServer} = prepare();
 

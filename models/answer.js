@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const answerSchema = mongoose.Schema({
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: 'User',
+    required: true
   },
   text: {
     type: String,

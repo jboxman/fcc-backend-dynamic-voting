@@ -39,7 +39,7 @@ test('Poll', t => {
   const poll = new Poll(pollFactory({question: null}));
   // err.errors contains each field name that fails?
   poll.validate((err) => {
-    console.log(err);
+    //console.log(err);
     t.end();
   })
 });

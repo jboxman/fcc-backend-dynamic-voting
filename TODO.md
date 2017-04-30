@@ -1,8 +1,7 @@
 # TODO
 
-- Split repo for server + React
-- Use Mongoose populate to look up createdBy references
-- Incorporate HMR setup from react-slingshot if possible
+- Wire up tests to test mongodb instance
+- Wire up migrations && run before tests
 - Experiment with Chart.js & sample poll object
   ```
   { _id: 58ff3f455fc7288e85440b07,
