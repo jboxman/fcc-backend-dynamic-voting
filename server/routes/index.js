@@ -3,7 +3,8 @@ const path = require('path');
 const router = require('koa-router')();
 const debug = require('debug')('fcc-voting');
 
-const pollsRouter = require('./polls');
+const pollsRouter = require('./polls_router');
+const usersRouter = require('./users_router');
 
 // Load React UI
 router.get('/', async function(ctx, next) {
@@ -12,5 +13,6 @@ router.get('/', async function(ctx, next) {
 });
 
 router.use(pollsRouter.routes());
+router.use(usersRouter.routes());
 
 module.exports = router;
