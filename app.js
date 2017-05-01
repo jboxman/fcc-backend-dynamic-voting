@@ -14,6 +14,6 @@ if(process.env.NODE_ENV != 'production') {
   }
 }
 
-setupDb();
-
-require('./server/app')();
+setupDb().then(() => {
+  require('./server/app')();
+});
