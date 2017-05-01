@@ -61,4 +61,15 @@ router.post('/create', async function(ctx, next) {
   .catch(err => console.log(err));
 });
 
+// Append a new choice to an existing poll
+router.post('/append/:id', async function(ctx, next) {
+  const {id} = ctx.params;
+  const payload = ctx.request.body;
+  
+  pollModel.addAnswer(id, payload)
+  .then(() => {
+    ctx.status = 201;
+  });
+});
+
 module.exports = router;

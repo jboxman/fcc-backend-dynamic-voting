@@ -42,17 +42,30 @@ pollSchema.statics.removePoll = function removePoll(id) {
 }
 
 pollSchema.statics.viewPoll = function viewPoll(id) {
-  //return this.findById(id).exec();
   // http://stackoverflow.com/questions/16356112/mongoose-increment-with-findone
   return this.findByIdAndUpdate(id, {$inc: {viewCount: 1}}, {new: true});
 }
 
-// Need both because we're embedding
 pollSchema.statics.vote = function vote(answerId) {
   // http://stackoverflow.com/questions/10522347/mongodb-update-objects-in-a-documents-array-nested-updating
   return this.findOneAndUpdate(
     {'answers._id': {$in: [answerId]}},
     {$inc: {'answers.$.voteCount': 1}},
+    {new: true});
+}
+
+// What should an answer contain?
+// We definitely need the user id from the session here and for addPoll above
+pollSchema.statics.addAnswer = function addAnswer(id, answer) {
+  return this.findOneAndUpdate(
+    id,
+    {
+      $push: {
+        answers: {
+          $each: [answer]
+        }
+      }
+    },
     {new: true});
 }
 
