@@ -56,7 +56,12 @@ pollSchema.statics.vote = function vote(answerId) {
 
 // What should an answer contain?
 // We definitely need the user id from the session here and for addPoll above
-pollSchema.statics.addAnswer = function addAnswer(id, answer) {
+pollSchema.statics.addAnswer = function addAnswer(id, payload) {
+  const answer = Object.assign(
+    {},
+    payload.data,
+    {createdBy: payload.user.id});
+
   return this.findOneAndUpdate(
     id,
     {

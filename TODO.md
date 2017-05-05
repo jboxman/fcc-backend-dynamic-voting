@@ -28,3 +28,4 @@
 - Setup & test some kind of Passport authentication
 - Add my-polls for authenticated user - display own user polls
 - Wrap authenticated-only routes
+- Use koa-json-validator or koa-jsonschema

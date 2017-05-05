@@ -141,6 +141,13 @@ test('app', t => {
     });
   });
 
+  t.test('add a new poll', async (t) => {
+    const {request, httpServer} = prepare();
+
+    request
+    .put('/polls/<id>')
+  });
+
   t.test('vote in a poll', function(t) {
     const {request, httpServer} = prepare();
 
