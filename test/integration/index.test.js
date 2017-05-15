@@ -12,6 +12,7 @@ const Answer = require('../../models/answer');
 let db;
 let defaultUser;
 let defaultAnswer;
+let newAnswer;
 
 /*
   TODO
@@ -26,6 +27,8 @@ let defaultAnswer;
 
 const prepare = () => {
   const {koaApp, httpServer} = createApp();
+  // cheat
+  koaApp.context.state = {user: {id: 1}};
   const request = agent(koaApp.callback());
   return {request, httpServer};
 }
@@ -65,6 +68,10 @@ test('app', t => {
           text: 'Jackie'
         }
       ];
+      newAnswer = {
+        createdBy: defaultUser.get('_id').toJSON(),
+        text: 'Johnie'
+      }
 
       t.end();
     }
@@ -144,8 +151,18 @@ test('app', t => {
   t.test('add a new poll', async (t) => {
     const {request, httpServer} = prepare();
 
+    // This is assuming we have a valid ctx.state.user object, but we do not.
+    // How to setup a session for testing?
+    const doc = await Poll.findOne({}).exec();
     request
-    .put('/polls/<id>')
+    .put(`/polls/append/${doc._id}`)
+    .send(newAnswer)
+    .expect(201)
+    .end((err, res) => {
+      httpServer.close();
+      t.end(err);
+    });
+
   });
 
   t.test('vote in a poll', function(t) {

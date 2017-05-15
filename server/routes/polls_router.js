@@ -62,7 +62,7 @@ router.post('/create', async function(ctx, next) {
 });
 
 // Append a new choice to an existing poll
-router.post('/append/:id', async function(ctx, next) {
+router.put('/append/:id', async function(ctx, next) {
   const {id} = ctx.params;
   // Validate this
   const payload = Object.assign({}, ctx.request.body, {user: ctx.state.user});
