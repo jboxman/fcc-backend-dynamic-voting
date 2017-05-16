@@ -30,8 +30,8 @@ app.use(function(ctx, next) {
 });
 
 app.use(route.get('/', function(ctx) {
-  ctx.status = 204
-}))
+  ctx.status = 204;
+}));
 
 app.use(route.post('/login',
   passport.authenticate('local', {
@@ -68,7 +68,7 @@ test('stuff', t => {
     .then(() => {
       console.log(session);
       // context.state.user
-      console.log(context);
+      console.log(context.state.user);
       t.end();
     });
   });
