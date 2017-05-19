@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const router = require('koa-router')();
+const passport = require('koa-passport');
+
 const debug = require('debug')('fcc-voting');
 
 const pollsRouter = require('./polls_router');
@@ -13,6 +15,14 @@ router.get('/', async function(ctx, next) {
 });
 
 router.use(pollsRouter.routes());
-router.use(usersRouter.routes());
+router.use((ctx, next) => {
+  if(ctx.isAuthenticated()) {
+    return next();
+  }
+  else {
+    console.log('Not authenticated');
+    return next();
+  }
+}, usersRouter.routes());
 
 module.exports = router;

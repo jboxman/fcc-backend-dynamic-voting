@@ -25,16 +25,39 @@ let newAnswer;
   - Add an answer to a poll
 */
 
+// Need to return to this so I can use scoped authenticated agents
 const prepare = () => {
   const {koaApp, httpServer} = createApp();
-  // cheat
-  koaApp.context.state = {user: {id: 1}};
   const request = agent(koaApp.callback());
   return {request, httpServer};
 }
 
+const createAuthenticatedUser = done => {
+  // This is the same server that's already running
+  const authenticatedUser = agent(k.callback());
+  authenticatedUser
+  .post({
+    username: 'jasonb@edseek.com',
+    password: 'test'
+  })
+  .send()
+  .end((error, resp) => {
+    console.log(error);
+    console.log(resp);
+    done(authenticatedUser);
+  });
+}
+
+let server;
+let request;
+let k;
 test('app', t => {
   t.test('setup db', function(t) {
+
+    const {koaApp, httpServer} = createApp();
+    request = agent(koaApp.callback());
+    server = httpServer;
+    k = koaApp;
 
     // TODO - Discover where other UnhandledPromiseRejectionWarning is emitted
     prepareDb().catch(() => {
@@ -69,7 +92,7 @@ test('app', t => {
         }
       ];
       newAnswer = {
-        createdBy: defaultUser.get('_id').toJSON(),
+        /*createdBy: defaultUser.get('_id').toJSON(),*/
         text: 'Johnie'
       }
 
@@ -80,20 +103,19 @@ test('app', t => {
 
   // status, statusCode, statusType, text, type
   t.test('should work', t => {
-    const {request, httpServer} = prepare();
+    //const {request, httpServer} = prepare();
 
     request
     .get('/')
     .expect(200)
     .end((err, res) => {
-      httpServer.close();
       t.end(err);
     });
 
   });
 
   t.test('create and view a poll', async function(t) {
-    const {request, httpServer} = prepare();
+    //const {request, httpServer} = prepare();
 
     const payload = {
       question: 'What is your name?',
@@ -119,7 +141,6 @@ test('app', t => {
       console.log(e);
     }
     finally {
-      httpServer.close();
       t.end();
     }
   });
@@ -137,36 +158,36 @@ test('app', t => {
   */
 
   t.test('get all polls', t => {
-    const {request, httpServer} = prepare();
+    //const {request, httpServer} = prepare();
 
     request
     .get('/polls')
     .expect(200)
     .end((err, res) => {
-      httpServer.close();
       t.end(err);
     });
   });
 
   t.test('add a new poll', async (t) => {
-    const {request, httpServer} = prepare();
+    //const {request, httpServer} = prepare();
 
     // This is assuming we have a valid ctx.state.user object, but we do not.
     // How to setup a session for testing?
-    const doc = await Poll.findOne({}).exec();
-    request
-    .put(`/polls/append/${doc._id}`)
-    .send(newAnswer)
-    .expect(201)
-    .end((err, res) => {
-      httpServer.close();
-      t.end(err);
+    createAuthenticatedUser(async () => {
+      const doc = await Poll.findOne({}).exec();
+      request
+      .put(`/polls/append/${doc._id}`)
+      .send(newAnswer)
+      .expect(201)
+      .end((err, res) => {
+        t.end(err);
+      });
     });
 
   });
 
   t.test('vote in a poll', function(t) {
-    const {request, httpServer} = prepare();
+    //const {request, httpServer} = prepare();
 
     // generator experiment
     function *getDoc() {
@@ -181,7 +202,6 @@ test('app', t => {
       .set('Accept', 'application/json')
       .expect(200)
       .end((err, res) => {
-        httpServer.close();
         t.end(err);
       });
     });
@@ -190,4 +210,7 @@ test('app', t => {
 
 });
 
-test.onFinish(() => db.close());
+test.onFinish(() => {
+  db.close();
+  server.close();
+});

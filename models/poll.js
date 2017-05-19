@@ -46,6 +46,11 @@ pollSchema.statics.viewPoll = function viewPoll(id) {
   return this.findByIdAndUpdate(id, {$inc: {viewCount: 1}}, {new: true});
 }
 
+/*
+  This may be needlessly opaque. Rather than POST to /polls/vote/{id}
+  the ID of the answer, we use mongo query syntax to find the poll
+  by the answer ID itself and increment the vote count.
+*/
 pollSchema.statics.vote = function vote(answerId) {
   // http://stackoverflow.com/questions/10522347/mongodb-update-objects-in-a-documents-array-nested-updating
   return this.findOneAndUpdate(

@@ -44,6 +44,8 @@ router.post('/vote', enforceJSON, async function(ctx, next) {
 });
 
 // add middleware to reject if request-type is not application/json?
+// We need to enforce some kind of contract for allowable JSON.
+// We should know the createdBy user from ctx.state.user.
 router.post('/create', async function(ctx, next) {
   // Need to get the POST data, possibly ensure it's safe
   const payload = ctx.request.body;
