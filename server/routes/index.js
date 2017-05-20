@@ -14,8 +14,13 @@ router.get('/', async function(ctx, next) {
   ctx.body = fs.createReadStream(path.join(__dirname, '../views/index.html'));
 });
 
+router.use(usersRouter.routes());
 router.use(pollsRouter.routes());
-router.use((ctx, next) => {
+
+module.exports = router;
+
+/*
+(ctx, next) => {
   if(ctx.isAuthenticated()) {
     return next();
   }
@@ -23,6 +28,4 @@ router.use((ctx, next) => {
     console.log('Not authenticated');
     return next();
   }
-}, usersRouter.routes());
-
-module.exports = router;
+}, */

@@ -64,9 +64,13 @@ pollSchema.statics.vote = function vote(answerId) {
 pollSchema.statics.addAnswer = function addAnswer(id, payload) {
   const answer = Object.assign(
     {},
-    payload.data,
+    payload.answer,
     {createdBy: payload.user.id});
 
+    return Promise.resolve({});
+
+    // This is very unhappy
+/*
   return this.findOneAndUpdate(
     id,
     {
@@ -77,6 +81,7 @@ pollSchema.statics.addAnswer = function addAnswer(id, payload) {
       }
     },
     {new: true});
+    */
 }
 
 // Use pollSchema.methods.blah to allow for custom methods

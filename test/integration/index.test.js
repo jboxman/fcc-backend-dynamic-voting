@@ -1,8 +1,11 @@
+//require('leaked-handles');
+
 const test = require('tape');
 const agent = require('supertest').agent;
 const sinon = require('sinon');
 
-const createApp = require('../../server/app');
+//const createApp = require('../../server/app');
+const app = require('../../server/app');
 const setupDb = require('../../models/index');
 
 const User = require('../../models/user');
@@ -26,39 +29,35 @@ let newAnswer;
 */
 
 // Need to return to this so I can use scoped authenticated agents
+
+// http://www.marcusoft.net/2015/10/eaddrinuse-when-watching-tests-with-mocha-and-supertest.html
 const prepare = () => {
-  const {koaApp, httpServer} = createApp();
-  const request = agent(koaApp.callback());
-  return {request, httpServer};
+  const httpServer = app.listen();
+  const request = agent(app.callback());
+  return {
+    request,
+    httpServer
+  };
 }
 
-const createAuthenticatedUser = done => {
-  // This is the same server that's already running
-  const authenticatedUser = agent(k.callback());
+// https://medium.com/@juha.a.hytonen/testing-authenticated-requests-with-supertest-325ccf47c2bb
+const createAuthenticatedUser = (done) => {
+  const httpServer = app.listen();
+  const authenticatedUser = agent(app.callback());
   authenticatedUser
-  .post({
+  .post('/users/login')
+  .send({
     username: 'jasonb@edseek.com',
     password: 'test'
   })
-  .send()
   .end((error, resp) => {
-    console.log(error);
-    console.log(resp);
     done(authenticatedUser);
+    httpServer.close();
   });
 }
 
-let server;
-let request;
-let k;
 test('app', t => {
   t.test('setup db', function(t) {
-
-    const {koaApp, httpServer} = createApp();
-    request = agent(koaApp.callback());
-    server = httpServer;
-    k = koaApp;
-
     // TODO - Discover where other UnhandledPromiseRejectionWarning is emitted
     prepareDb().catch(() => {
       console.log('caught');
@@ -103,19 +102,20 @@ test('app', t => {
 
   // status, statusCode, statusType, text, type
   t.test('should work', t => {
-    //const {request, httpServer} = prepare();
+    const {request, httpServer} = prepare();
 
     request
     .get('/')
     .expect(200)
     .end((err, res) => {
+      httpServer.close();
       t.end(err);
     });
 
   });
 
   t.test('create and view a poll', async function(t) {
-    //const {request, httpServer} = prepare();
+    const {request, httpServer} = prepare();
 
     const payload = {
       question: 'What is your name?',
@@ -141,12 +141,13 @@ test('app', t => {
       console.log(e);
     }
     finally {
+      httpServer.close();
       t.end();
     }
   });
 
-  // http://stackoverflow.com/questions/19222520/populate-nested-array-in-mongoose
   /*
+  // http://stackoverflow.com/questions/19222520/populate-nested-array-in-mongoose
   t.test('check populate', async function(t) {
     const doc = await Poll.findOne({}).populate({
       path: 'createdBy'
@@ -158,12 +159,13 @@ test('app', t => {
   */
 
   t.test('get all polls', t => {
-    //const {request, httpServer} = prepare();
+    const {request, httpServer} = prepare();
 
     request
     .get('/polls')
     .expect(200)
     .end((err, res) => {
+      httpServer.close();
       t.end(err);
     });
   });
@@ -173,21 +175,21 @@ test('app', t => {
 
     // This is assuming we have a valid ctx.state.user object, but we do not.
     // How to setup a session for testing?
-    createAuthenticatedUser(async () => {
+    createAuthenticatedUser(async (request) => {
       const doc = await Poll.findOne({}).exec();
       request
-      .put(`/polls/append/${doc._id}`)
+      .put(`/polls/append/abc`)
       .send(newAnswer)
-      .expect(201)
+      .expect(200)
       .end((err, res) => {
+        //httpServer.close();
         t.end(err);
       });
     });
-
   });
 
   t.test('vote in a poll', function(t) {
-    //const {request, httpServer} = prepare();
+    const {request, httpServer} = prepare();
 
     // generator experiment
     function *getDoc() {
@@ -202,6 +204,7 @@ test('app', t => {
       .set('Accept', 'application/json')
       .expect(200)
       .end((err, res) => {
+        httpServer.close();
         t.end(err);
       });
     });
@@ -212,5 +215,4 @@ test('app', t => {
 
 test.onFinish(() => {
   db.close();
-  server.close();
 });

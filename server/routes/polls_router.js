@@ -67,11 +67,15 @@ router.post('/create', async function(ctx, next) {
 router.put('/append/:id', async function(ctx, next) {
   const {id} = ctx.params;
   // Validate this
-  const payload = Object.assign({}, ctx.request.body, {user: ctx.state.user});
+  const payload = Object.assign({}, {answer: ctx.request.body}, {user: ctx.state.user});
 
   pollModel.addAnswer(id, payload)
   .then(() => {
-    ctx.status = 201;
+    ctx.status = 200;
+  })
+  .catch(() => {
+    ctx.status = 500;
+    //ctx.throw(500);
   });
 });
 

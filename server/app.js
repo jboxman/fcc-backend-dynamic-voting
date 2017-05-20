@@ -7,35 +7,33 @@ const logger = require('koa-logger')
 
 const debug = require('debug')('fcc-voting');
 
+const config = require('../config/envs');
 const routes = require('./routes');
 
 require('../util/authentication');
 
-const port = 3000;
-
+const app = new Koa();
 app.keys = ['a secret'];
 
-// Each time createApp() is called, it adds more middleware to app.
-// This is bad.
-function createApp() {
-  const app = new Koa();
+app.use(logger());
+app.use(bodyParser());
+app.use(session({}, app));
 
-  app.use(logger());
-  app.use(session(app));
-  app.use(bodyParser());
+app.use(passport.initialize());
+app.use(passport.session());
 
-  app.use(passport.initialize());
-  app.use(passport.session());
+// where is my ctx.cookies
+app.use((ctx, next) => {
+  return next();
+});
 
-  app.use(routes.routes());
-  app.use(routes.allowedMethods());
-  //app.use(router.routes());
+app.use(routes.routes());
+app.use(routes.allowedMethods());
 
-  const server = app.listen(port, () => {
-    debug(`Listening on ${port}`);
+if(!module.parent) {
+  app.listen(config.app.port, () => {
+    debug(`Listening on ${config.app.port}`);
   });
-
-  return {koaApp: app, httpServer: server};
 }
 
-module.exports = createApp;
+module.exports = app;

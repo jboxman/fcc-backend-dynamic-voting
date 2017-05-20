@@ -13,8 +13,7 @@ const router = new Router({
   prefix: '/users'
 });
 
-// https://github.com/rkusa/koa-passport-example/blob/master/server.js
-router.post('/login', (ctx) => {
+router.post('/login', (ctx, next) => {
   return passport.authenticate('local', (err, user, info, status) => {
     if(user) {
       ctx.body = {success: true};
@@ -22,13 +21,9 @@ router.post('/login', (ctx) => {
     }
     else {
       ctx.body = {success: false};
-      ctx.throw(401);
+      ctx.status = 401;
     }
   })(ctx, next);
-});
-
-router.get('/session', (ctx) => {
-
 });
 
 module.exports = router;

@@ -3,18 +3,21 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 
+const fakeUser = {
+  email: 'jasonb@edseek.com',
+  id: '123'
+};
+
+
 passport.serializeUser(function(user, done) {
   done(null, 1);
 });
 
 passport.deserializeUser(async function(id, done) {
-  done(null, {email: 'jasonb@edseek.com'});
+  done(null, fakeUser);
 });
 
 // Revealing constructor pattern
 passport.use(new LocalStrategy((username, password, done) => {
-  const user = {
-    email: 'jasonb@edseek.com'
-  };
-  return done(null, user);
+  return done(null, fakeUser);
 }));
