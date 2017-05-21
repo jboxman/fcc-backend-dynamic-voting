@@ -4,9 +4,8 @@ const test = require('tape');
 const agent = require('supertest').agent;
 const sinon = require('sinon');
 
-//const createApp = require('../../server/app');
 const app = require('../../server/app');
-const setupDb = require('../../models/index');
+const dbConnect = require('../../models/index');
 
 const User = require('../../models/user');
 const Poll = require('../../models/poll');
@@ -56,48 +55,46 @@ const createAuthenticatedUser = (done) => {
   });
 }
 
+const dbClear = async (conn) => {
+  // http://stackoverflow.com/a/28067650/6732764
+  for(c in conn.collections) {
+    try {
+      if (conn.collections[c].collectionName.indexOf('system.') == -1)
+        await conn.collections[c].drop();
+      else
+        await conn.collections[c].remove({});
+    }
+    catch(e) {}
+  }
+};
+
 test('app', t => {
-  t.test('setup db', function(t) {
-    // TODO - Discover where other UnhandledPromiseRejectionWarning is emitted
-    prepareDb().catch(() => {
-      console.log('caught');
-    });
+  t.test('setup db', async function(t) {
 
-    async function prepareDb() {
-      db = await setupDb();
+    conn = await dbConnect();
+    await dbClear(conn);
 
-      // http://stackoverflow.com/a/28067650/6732764
-      for(c in db.collections) {
-        // (node:8376) UnhandledPromiseRejectionWarning: Unhandled promise rejection (rejection id: 2): MongoError: ns not found
-        if (db.collections[c].collectionName.indexOf('system.') == -1)
-          db.collections[c].drop();
-        else
-          db.collections[c].remove({});
+    defaultUser = await User.create({email: 'user@example.com'});
+    defaultAnswers = [
+      {
+        createdBy: defaultUser.get('_id').toJSON(),
+        text: 'Bob'
+      },
+      {
+        createdBy: defaultUser.get('_id').toJSON(),
+        text: 'Frank'
+      },
+      {
+        createdBy: defaultUser.get('_id').toJSON(),
+        text: 'Jackie'
       }
-
-      defaultUser = await User.create({email: 'user@example.com'});
-      defaultAnswers = [
-        {
-          createdBy: defaultUser.get('_id').toJSON(),
-          text: 'Bob'
-        },
-        {
-          createdBy: defaultUser.get('_id').toJSON(),
-          text: 'Frank'
-        },
-        {
-          createdBy: defaultUser.get('_id').toJSON(),
-          text: 'Jackie'
-        }
-      ];
-      newAnswer = {
-        /*createdBy: defaultUser.get('_id').toJSON(),*/
-        text: 'Johnie'
-      }
-
-      t.end();
+    ];
+    newAnswer = {
+      /*createdBy: defaultUser.get('_id').toJSON(),*/
+      text: 'Johnie'
     }
 
+    t.end();
   });
 
   // status, statusCode, statusType, text, type
@@ -171,18 +168,13 @@ test('app', t => {
   });
 
   t.test('add a new poll', async (t) => {
-    //const {request, httpServer} = prepare();
-
-    // This is assuming we have a valid ctx.state.user object, but we do not.
-    // How to setup a session for testing?
     createAuthenticatedUser(async (request) => {
       const doc = await Poll.findOne({}).exec();
       request
-      .put(`/polls/append/abc`)
+      .put(`/polls/append/${doc._id}`)
       .send(newAnswer)
       .expect(200)
       .end((err, res) => {
-        //httpServer.close();
         t.end(err);
       });
     });
@@ -214,5 +206,5 @@ test('app', t => {
 });
 
 test.onFinish(() => {
-  db.close();
+  conn.close();
 });

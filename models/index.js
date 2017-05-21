@@ -3,7 +3,7 @@ mongoose.Promise = global.Promise;
 
 const config = require('../config/envs');
 
-function setupDb() {
+function dbConnect() {
 
   // Return a Promise here so we can await on it later
   return new Promise(function(resolve, reject) {
@@ -22,4 +22,4 @@ function setupDb() {
   });
 }
 
-module.exports = setupDb;
+module.exports = dbConnect;
