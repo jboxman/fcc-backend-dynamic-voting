@@ -9,6 +9,15 @@ const debug = require('debug')('fcc-voting');
 
 const pollModel = require('../../models/poll');
 
+/*
+  ctx.body shape
+  {
+    payload: {
+      // Actual data
+    }
+  }
+*/
+
 const router = new Router({
   prefix: '/polls'
 });
@@ -17,19 +26,100 @@ const enforceJSON = (ctx, next) => {
   return ctx.request.type == 'application/json' ? next() : ctx.status = 400;
 }
 
+const validation = {
+  viewPoll: [
+    {
+      params: object({
+        id: string().required()
+      })
+    },
+    {
+      // Silently allows unknown values
+      stripUnknown: true
+    }    
+  ],
+  createPoll: [
+    {
+      body: object().keys({
+        payload: object({
+          question: string().required(),
+          answers: array().required().items(object({
+            text: string().required()
+          }))
+        })
+    })},
+    {
+      // Silently allows unknown values
+      stripUnknown: true
+    }
+  ],
+  votePoll: [
+    {
+       body: object({
+        id: string().required()
+      })
+    }
+  ],
+  appendPollAnswer: [
+    {
+      params: object({
+        id: string().required()
+      }),
+      body: object().keys({
+        payload: object({
+          text: string().required()
+        })
+    })},
+    {
+      stripUnknown: true
+    }
+  ]
+};
+
+router.get(
+  '/',
+  async function(ctx, next) {
+    const polls = await pollModel.findAllPolls();
+    ctx.type = 'json';
+    ctx.body = polls;
+    return next();
+  });
+
 /*
-  TODO
-  - Each payload must be wrapped in a object with meta field
+  TODO - Why does 0 end up in params?
+  ValidationError: "0" is not allowed
+  Object {0: "", id: "5921ffad00fe3aaad218a13e"}
 */
+router.get(
+  '/view/:id',
+  validator(...validation['viewPoll']),
+  viewPoll);
 
-router.get('/', async function(ctx, next) {
-  const polls = await pollModel.findAllPolls();
-  ctx.type = 'json';
-  ctx.body = polls;
-  return;
-});
+router.post(
+  '/create',
+  enforceJSON,
+  validator(...validation['createPoll']),
+  createPoll);
 
-router.get('/view/:id', async function(ctx, next) {
+router.post(
+  '/vote',
+  enforceJSON,
+  validator(...validation['votePoll']),
+  votePoll);
+
+/*
+  Append a new choice to an existing poll.
+  This expects the _id of the answer only, rather than
+  the poll _id too. Due to how mongo queries work, this
+  is possible, but confusing in retrospect.
+*/
+router.put(
+  '/append/:id',
+  enforceJSON,
+  validator(...validation['appendPollAnswer']),
+  appendPollAnswer);
+
+async function viewPoll(ctx, next) {
   const {id} = ctx.params;
   // TODO - throw 400 if id missing
   return pollModel.viewPoll(id)
@@ -37,25 +127,14 @@ router.get('/view/:id', async function(ctx, next) {
     ctx.type = 'json';
     ctx.body = poll;
   });
-});
+}
 
-// add middleware to reject if request-type is not application/json?
-router.post('/vote', enforceJSON, async function(ctx, next) {
-  const {id} = ctx.request.body;
-  return pollModel.vote(id)
-  .then((poll) => {
-    ctx.type = 'json';
-    ctx.body = poll;
-  });
-});
-
-const createPoll = async (ctx, next) => {
+async function createPoll(ctx, next) {
   const payload = Object.assign(
     {},
     {data: ctx.request.body.payload},
     {user: ctx.state.user});
 
-  //const {payload} = ctx.request.body;
   return pollModel.addPoll(payload)
   .then((doc) => {
     ctx.status = 201;
@@ -69,34 +148,21 @@ const createPoll = async (ctx, next) => {
   })
 };
 
-// add middleware to reject if request-type is not application/json?
-// We need to enforce some kind of contract for allowable JSON.
-// We should know the createdBy user from ctx.state.user.
-router.post(
-  '/create',
-  enforceJSON,
-  validator({
-    body: object().keys({
-      payload: object({
-        question: string().required(),
-        answers: array().required().items(object({
-          text: string().required()
-        }))
-      })
-    })},
-    {
-      // Silently allows unknown values
-      stripUnknown: true
-    }),
-  createPoll);
+async function votePoll(ctx, next) {
+  const {id} = ctx.request.body;
+  return pollModel.vote(id)
+  .then((poll) => {
+    ctx.type = 'json';
+    ctx.body = poll;
+  });
+}
 
-// What is the API contract? What shape does the JSON send in take?
-const appendPollAnswer = async (ctx, next) => {
+async function appendPollAnswer(ctx, next) {
   const {id} = ctx.params;
-  // Validate this
-  // user should be a valid Mongoose model; if it's not,
-  // that is a CastError from Mongoose, so might as well throw anyway.
-  const payload = Object.assign({}, {answer: ctx.request.body}, {user: ctx.state.user});
+  const payload = Object.assign(
+    {},
+    {data: ctx.request.body.payload},
+    {user: ctx.state.user});
 
   return pollModel.addAnswer(id, payload)
   .then((v) => {
@@ -108,17 +174,5 @@ const appendPollAnswer = async (ctx, next) => {
     //ctx.throw(500);
   });
 };
-
-// Append a new choice to an existing poll
-router.put(
-  '/append/:id',
-  validator({
-    body: object().keys({
-      answer: string().required()
-    })},
-    {
-      stripUnknown: true
-    }),
-  appendPollAnswer);
 
 module.exports = router;

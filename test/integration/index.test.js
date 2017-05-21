@@ -14,7 +14,6 @@ const Answer = require('../../models/answer');
 let db;
 let defaultUser;
 let defaultAnswer;
-let newAnswer;
 
 /*
   TODO
@@ -90,10 +89,6 @@ test('app', t => {
         text: 'Jackie'
       }
     ];
-    newAnswer = {
-      /*createdBy: defaultUser.get('_id').toJSON(),*/
-      text: 'Johnie'
-    }
 
     t.end();
   });
@@ -113,8 +108,6 @@ test('app', t => {
   });
 
   t.test('create and view a poll', async function(t) {
-    const {request, httpServer} = prepare();
-
     const payload = {
       question: 'What is your name?',
       //createdBy: {_id: defaultUser.get('_id').toJSON()},
@@ -170,11 +163,14 @@ test('app', t => {
   });
 
   t.test('add a new poll answer', async (t) => {
+    const payload = {
+      text: 'Johnie'
+    }
     createAuthenticatedUser(async (request) => {
       const doc = await Poll.findOne({}).exec();
       request
       .put(`/polls/append/${doc._id}`)
-      .send(newAnswer)
+      .send({payload})
       .expect(200)
       .end((err, res) => {
         t.end(err);
@@ -183,23 +179,22 @@ test('app', t => {
   });
 
   t.test('vote in a poll', function(t) {
-    const {request, httpServer} = prepare();
+    createAuthenticatedUser(async (request) => {
+      // generator experiment
+      function *getDoc() {
+        return yield Poll.findOne({}).exec();
+      }
 
-    // generator experiment
-    function *getDoc() {
-      return yield Poll.findOne({}).exec();
-    }
-
-    const promise = getDoc().next().value;
-    promise.then(doc => {
-      request
-      .post(`/polls/vote/`)
-      .send({id: `${doc.answers[1]._id}`})
-      .set('Accept', 'application/json')
-      .expect(200)
-      .end((err, res) => {
-        httpServer.close();
-        t.end(err);
+      const promise = getDoc().next().value;
+      promise.then(doc => {
+        request
+        .post(`/polls/vote/`)
+        .send({id: `${doc.answers[1]._id}`})
+        .set('Accept', 'application/json')
+        .expect(200)
+        .end((err, res) => {
+          t.end(err);
+        });
       });
     });
 

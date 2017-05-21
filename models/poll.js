@@ -72,12 +72,9 @@ pollSchema.statics.vote = function vote(answerId) {
 pollSchema.statics.addAnswer = function addAnswer(id, payload) {
   const answer = Object.assign(
     {},
-    payload.answer,
+    payload.data.answer,
     {createdBy: payload.user.id});
 
-    //return Promise.resolve({});
-
-  // This is very unhappy
   return this.findOneAndUpdate(
     id,
     {

@@ -63,13 +63,15 @@ test('polls', async (t) => {
       ]
     });
 
+    const payload = {
+        data: {
+          text: 'green'
+        },
+        user: user.toObject()
+    }
     const actual = await Poll.addAnswer(
       poll._id,
-      {
-        answer: {text: 'green'},
-        user: {id: user._id, email: user.email}
-      }
-    );
+      payload);
 
     console.log(actual);
 
