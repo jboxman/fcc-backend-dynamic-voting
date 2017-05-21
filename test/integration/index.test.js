@@ -74,7 +74,8 @@ test('app', t => {
     conn = await dbConnect();
     await dbClear(conn);
 
-    defaultUser = await User.create({email: 'user@example.com'});
+    // collection fixtures would be nice for this
+    defaultUser = await User.create({email: 'jasonb@edseek.com'});
     defaultAnswers = [
       {
         createdBy: defaultUser.get('_id').toJSON(),
@@ -116,31 +117,32 @@ test('app', t => {
 
     const payload = {
       question: 'What is your name?',
-      createdBy: {_id: defaultUser.get('_id').toJSON()},
+      //createdBy: {_id: defaultUser.get('_id').toJSON()},
       answers: defaultAnswers
     };
 
     let createReq, viewReq;
-    try {
-      createReq = await request
-      .post('/polls/create')
-      .send(payload)
-      .set('Accept', 'application/json')
-      .expect(201);
+    createAuthenticatedUser(async (request) => {
+      try {
+        createReq = await request
+        .post('/polls/create')
+        .send({payload})
+        .set('Accept', 'application/json')
+        .expect(201);
 
-      viewReq = await request
-      .get(`/polls/view/${createReq.body._id}`)
-      .expect(200)
+        viewReq = await request
+        .get(`/polls/view/${createReq.body._id}`)
+        .expect(200)
 
-      t.equal(viewReq.body.viewCount, 1, 'viewCount should equal 1');
-    }
-    catch(e) {
-      console.log(e);
-    }
-    finally {
-      httpServer.close();
-      t.end();
-    }
+        t.equal(viewReq.body.viewCount, 1, 'viewCount should equal 1');
+      }
+      catch(e) {
+        console.log(e);
+      }
+      finally {
+        t.end();
+      }
+    });
   });
 
   /*
@@ -167,7 +169,7 @@ test('app', t => {
     });
   });
 
-  t.test('add a new poll', async (t) => {
+  t.test('add a new poll answer', async (t) => {
     createAuthenticatedUser(async (request) => {
       const doc = await Poll.findOne({}).exec();
       request

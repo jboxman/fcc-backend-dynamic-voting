@@ -31,10 +31,18 @@ pollSchema.statics.findAllPolls = function findAllPolls() {
   return this.find({});
 }
 
-// What happens if one or more answers is invalid?
-pollSchema.statics.addPoll = function addPoll(o) {
+// Each answer must have a createdBy
+pollSchema.statics.addPoll = function addPoll(payload) {
+  const poll = Object.assign({}, payload.data, {createdBy: payload.user._id});
+  // TODO - rework using ramda
+  poll.answers.forEach(answer => {
+    Object.assign(answer, {
+      createdBy: poll.createdBy
+    });
+  });
+
   // Get back err.errors on failure.
-  return this.create(o);
+  return this.create(poll);
 }
 
 pollSchema.statics.removePoll = function removePoll(id) {
@@ -67,10 +75,9 @@ pollSchema.statics.addAnswer = function addAnswer(id, payload) {
     payload.answer,
     {createdBy: payload.user.id});
 
-    return Promise.resolve({});
+    //return Promise.resolve({});
 
-    // This is very unhappy
-/*
+  // This is very unhappy
   return this.findOneAndUpdate(
     id,
     {
@@ -81,7 +88,6 @@ pollSchema.statics.addAnswer = function addAnswer(id, payload) {
       }
     },
     {new: true});
-    */
 }
 
 // Use pollSchema.methods.blah to allow for custom methods

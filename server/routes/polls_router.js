@@ -1,4 +1,10 @@
 const Router = require('koa-router');
+const {
+  default: validator,
+  object,
+  string,
+  array
+} = require('koa-context-validator');
 const debug = require('debug')('fcc-voting');
 
 const pollModel = require('../../models/poll');
@@ -43,40 +49,76 @@ router.post('/vote', enforceJSON, async function(ctx, next) {
   });
 });
 
-// add middleware to reject if request-type is not application/json?
-// We need to enforce some kind of contract for allowable JSON.
-// We should know the createdBy user from ctx.state.user.
-router.post('/create', async function(ctx, next) {
-  // Need to get the POST data, possibly ensure it's safe
-  const payload = ctx.request.body;
+const createPoll = async (ctx, next) => {
+  const payload = Object.assign(
+    {},
+    {data: ctx.request.body.payload},
+    {user: ctx.state.user});
+
+  //const {payload} = ctx.request.body;
   return pollModel.addPoll(payload)
-  .then((newPoll) => {
+  .then((doc) => {
     ctx.status = 201;
     ctx.type = 'json';
-    ctx.body = newPoll.toJSON();
+    ctx.body = doc.toJSON();
   })
   .catch(err => {
     console.log(err);
     ctx.body = {errors: err.errors};
     ctx.status = 400;
   })
-  .catch(err => console.log(err));
-});
+};
 
-// Append a new choice to an existing poll
-router.put('/append/:id', async function(ctx, next) {
+// add middleware to reject if request-type is not application/json?
+// We need to enforce some kind of contract for allowable JSON.
+// We should know the createdBy user from ctx.state.user.
+router.post(
+  '/create',
+  enforceJSON,
+  validator({
+    body: object().keys({
+      payload: object({
+        question: string().required(),
+        answers: array().required().items(object({
+          text: string().required()
+        }))
+      })
+    })},
+    {
+      // Silently allows unknown values
+      stripUnknown: true
+    }),
+  createPoll);
+
+// What is the API contract? What shape does the JSON send in take?
+const appendPollAnswer = async (ctx, next) => {
   const {id} = ctx.params;
   // Validate this
+  // user should be a valid Mongoose model; if it's not,
+  // that is a CastError from Mongoose, so might as well throw anyway.
   const payload = Object.assign({}, {answer: ctx.request.body}, {user: ctx.state.user});
 
-  pollModel.addAnswer(id, payload)
-  .then(() => {
+  return pollModel.addAnswer(id, payload)
+  .then((v) => {
     ctx.status = 200;
+    ctx.body = {success: true}
   })
-  .catch(() => {
+  .catch((v) => {
     ctx.status = 500;
     //ctx.throw(500);
   });
-});
+};
+
+// Append a new choice to an existing poll
+router.put(
+  '/append/:id',
+  validator({
+    body: object().keys({
+      answer: string().required()
+    })},
+    {
+      stripUnknown: true
+    }),
+  appendPollAnswer);
 
 module.exports = router;
