@@ -3,6 +3,13 @@
 - Wire up tests to test mongodb instance
 - Wire up migrations && run before tests
 - Experiment with Chart.js & sample poll object
+- Setup & test some kind of Passport authentication
+- Add my-polls for authenticated user - display own user polls
+- Wrap authenticated-only routes
+- Use koa-context-validator
+
+# Example output
+
   ```
   { _id: 58ff3f455fc7288e85440b07,
   updatedAt: 2017-04-25T12:21:25.876Z,
@@ -25,7 +32,3 @@
        voteCount: 15 } ],
   viewCount: 1 }
   ```
-- Setup & test some kind of Passport authentication
-- Add my-polls for authenticated user - display own user polls
-- Wrap authenticated-only routes
-- Use koa-json-validator or koa-jsonschema
