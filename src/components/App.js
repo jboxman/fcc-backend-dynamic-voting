@@ -6,6 +6,11 @@ import { Link, IndexLink } from 'react-router';
 // version of hot reloading won't hot reload a stateless
 // component at the top-level.
 class App extends React.Component {
+
+  componentDidMount() {
+    fetch('/api/test').then(v => console.log(v));
+  }
+
   render() {
     return (
       <div>
