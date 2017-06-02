@@ -26,9 +26,6 @@ let defaultAnswer;
   - Add an answer to a poll
 */
 
-// Need to return to this so I can use scoped authenticated agents
-
-// http://www.marcusoft.net/2015/10/eaddrinuse-when-watching-tests-with-mocha-and-supertest.html
 const prepare = () => {
   const httpServer = app.listen();
   const request = agent(app.callback());
@@ -137,18 +134,6 @@ test('app', t => {
       }
     });
   });
-
-  /*
-  // http://stackoverflow.com/questions/19222520/populate-nested-array-in-mongoose
-  t.test('check populate', async function(t) {
-    const doc = await Poll.findOne({}).populate({
-      path: 'createdBy'
-      }).populate({
-        path: 'answers.createdBy'
-      }).exec();
-    t.end();
-  });
-  */
 
   t.test('get all polls', t => {
     const {request, httpServer} = prepare();

@@ -27,8 +27,14 @@ const pollSchema = mongoose.Schema(
     timestamps: true
   });
 
+// options, limit, start, order
 pollSchema.statics.findAllPolls = function findAllPolls() {
-  return this.find({});
+  // http://stackoverflow.com/questions/19222520/populate-nested-array-in-mongoose
+  return this.find({}).populate({
+          path: 'createdBy'
+      }).populate({
+        path: 'answers.createdBy'
+    }).exec();
 }
 
 // Each answer must have a createdBy
@@ -51,7 +57,18 @@ pollSchema.statics.removePoll = function removePoll(id) {
 
 pollSchema.statics.viewPoll = function viewPoll(id) {
   // http://stackoverflow.com/questions/16356112/mongoose-increment-with-findone
-  return this.findByIdAndUpdate(id, {$inc: {viewCount: 1}}, {new: true});
+  return this.findByIdAndUpdate(
+    id,
+    {
+      $inc: {
+        viewCount: 1
+      }
+    },
+    {new: true}).populate({
+          path: 'createdBy'
+      }).populate({
+        path: 'answers.createdBy'
+    }).exec();
 }
 
 /*
@@ -84,7 +101,7 @@ pollSchema.statics.addAnswer = function addAnswer(id, payload) {
         }
       }
     },
-    {new: true});
+    {new: true}).populate();
 }
 
 // Use pollSchema.methods.blah to allow for custom methods

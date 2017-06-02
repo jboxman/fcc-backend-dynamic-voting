@@ -47,6 +47,11 @@ test('polls', async (t) => {
     t.end();
   });
 
+  t.test('check populate', async function(t) {
+    const doc = await Poll.findAllPolls();
+    t.end();
+  });
+
   t.test('add answer', async (t) => {
     const poll = await Poll.create({
       question: 'What color is the sky?',
