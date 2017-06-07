@@ -22,11 +22,6 @@ app.use(session({}, app));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// where is my ctx.cookies
-app.use((ctx, next) => {
-  return next();
-});
-
 app.use(routes.routes());
 app.use(routes.allowedMethods());
 

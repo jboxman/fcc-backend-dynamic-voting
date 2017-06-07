@@ -23,6 +23,7 @@ browserSync({
   server: {
     baseDir: 'src',
 
+    // Proxy API requests
     middleware: [
       {
         route: '/api',
