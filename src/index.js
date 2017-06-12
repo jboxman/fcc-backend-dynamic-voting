@@ -4,6 +4,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { browserHistory } from 'react-router';
 import { AppContainer } from 'react-hot-loader';
+import injectTapEventPlugin from 'react-tap-event-plugin';
 import Root from './components/Root';
 
 import configureStore from './store/configureStore';
@@ -16,6 +17,8 @@ const store = configureStore();
 // Create an enhanced history that syncs navigation events with the store
 const history = syncHistoryWithStore(browserHistory, store);
 
+// https://github.com/zilverline/react-tap-event-plugin
+injectTapEventPlugin();
 
 render(
   <AppContainer>
