@@ -7,7 +7,7 @@ const passport = require('koa-passport');
   Reference: https://github.com/rkusa/koa-passport-example/blob/master/server.js
 */
 
-const userModel = require('../../models/user');
+const userModel = require('./userModel');
 
 const router = new Router({
   prefix: '/users'

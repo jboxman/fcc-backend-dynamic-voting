@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-const answerSchema = require('./answer').schema;
+const userModel = require('../users/userModel');
+const answerModel = require('./answerModel');
 
 const pollSchema = mongoose.Schema(
   {
@@ -19,7 +20,7 @@ const pollSchema = mongoose.Schema(
       default: 0
     },
     answers: {
-      type: [answerSchema],
+      type: [answerModel.schema],
       validate: ensureOneOrMoreAnswers
     }
   },
@@ -39,7 +40,8 @@ pollSchema.statics.findAllPolls = function findAllPolls() {
 
 // Each answer must have a createdBy
 pollSchema.statics.addPoll = function addPoll(payload) {
-  const poll = Object.assign({}, payload.data, {createdBy: payload.user._id});
+  const poll = Object.assign({answers: []}, payload);
+
   // TODO - rework using ramda
   poll.answers.forEach(answer => {
     Object.assign(answer, {
@@ -47,8 +49,8 @@ pollSchema.statics.addPoll = function addPoll(payload) {
     });
   });
 
-  // Get back err.errors on failure.
-  return this.create(poll);
+  const apoll = new this(poll);
+  return apoll.save();
 }
 
 pollSchema.statics.removePoll = function removePoll(id) {
@@ -79,19 +81,20 @@ pollSchema.statics.viewPoll = function viewPoll(id) {
 pollSchema.statics.vote = function vote(answerId) {
   // http://stackoverflow.com/questions/10522347/mongodb-update-objects-in-a-documents-array-nested-updating
   return this.findOneAndUpdate(
-    {'answers._id': {$in: [answerId]}},
-    {$inc: {'answers.$.voteCount': 1}},
+    {
+      'answers._id': {
+        $in: [answerId]
+      }
+    },
+    {
+      $inc: {
+        'answers.$.voteCount': 1
+      }
+    },
     {new: true});
 }
 
-// What should an answer contain?
-// We definitely need the user id from the session here and for addPoll above
-pollSchema.statics.addAnswer = function addAnswer(id, payload) {
-  const answer = Object.assign(
-    {},
-    payload.data.answer,
-    {createdBy: payload.user.id});
-
+pollSchema.statics.addAnswer = function addAnswer(id, answer) {
   return this.findOneAndUpdate(
     id,
     {
@@ -114,18 +117,3 @@ function ensureOneOrMoreAnswers(value) {
   }
   return false;
 }
-
-// We need back validation failure
-/*
-{ [ValidationError: Validation failed]
-  message: 'Validation failed',
-  name: 'ValidationError',
-  errors: 
-   { Name: 
-      { [ValidatorError: Path `Name` is required.]
-        message: 'Path `Name` is required.',
-        name: 'ValidatorError',
-        path: 'Name',
-        type: 'required',
-        value: undefined } } }
-*/

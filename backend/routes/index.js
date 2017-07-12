@@ -5,8 +5,8 @@ const passport = require('koa-passport');
 
 const debug = require('debug')('fcc-voting');
 
-const pollsRouter = require('./polls_router');
-const usersRouter = require('./users_router');
+const pollsRouter = require('../entities/polls/api');
+const usersRouter = require('../entities/users/api');
 
 // Load React UI
 router.get('/', async function(ctx, next) {

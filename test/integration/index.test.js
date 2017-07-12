@@ -4,12 +4,11 @@ const test = require('tape');
 const agent = require('supertest').agent;
 const sinon = require('sinon');
 
-const app = require('../../server/app');
+const app = require('../../backend/app');
 const dbConnect = require('../../models/index');
 
-const User = require('../../models/user');
-const Poll = require('../../models/poll');
-const Answer = require('../../models/answer');
+const User = require('../../backend/entities/users/userModel');
+const Poll = require('../../backend/entities/polls/pollModel');
 
 let db;
 let defaultUser;
@@ -121,12 +120,13 @@ test('app', t => {
         .expect(201);
 
         viewReq = await request
-        .get(`/polls/view/${createReq.body._id}`)
-        .expect(200)
+        .get(`/polls/view/${createReq.body.data[0]._id}`)
+        .expect(200);
 
-        t.equal(viewReq.body.viewCount, 1, 'viewCount should equal 1');
+        t.equal(viewReq.body.data[0].viewCount, 1, 'viewCount should equal 1');
       }
       catch(e) {
+        // Promise rejection
         console.log(e);
       }
       finally {

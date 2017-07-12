@@ -7,7 +7,8 @@ const {
 } = require('koa-context-validator');
 const debug = require('debug')('fcc-voting');
 
-const pollModel = require('../../models/poll');
+//const pollModel = require('./pollModel');
+const controller = require('./controller');
 
 /*
   ctx.body shape
@@ -79,7 +80,7 @@ const validation = {
 router.get(
   '/',
   async function(ctx, next) {
-    const polls = await pollModel.findAllPolls();
+    const polls = await controller.findAllPolls();
     ctx.type = 'json';
     ctx.body = polls;
     return next();
@@ -119,10 +120,13 @@ router.put(
   validator(...validation['appendPollAnswer']),
   appendPollAnswer);
 
+// TODO -
+// Update all of these to use the controller now
 async function viewPoll(ctx, next) {
   const {id} = ctx.params;
+  console.log(id);
   // TODO - throw 400 if id missing
-  return pollModel.viewPoll(id)
+  return controller.viewPoll(id)
   .then((poll) => {
     ctx.type = 'json';
     ctx.body = poll;
@@ -130,16 +134,11 @@ async function viewPoll(ctx, next) {
 }
 
 async function createPoll(ctx, next) {
-  const payload = Object.assign(
-    {},
-    {data: ctx.request.body.payload},
-    {user: ctx.state.user});
-
-  return pollModel.addPoll(payload)
+  return controller.createPoll(ctx.request.body.payload, ctx.state.user)
   .then((doc) => {
     ctx.status = 201;
     ctx.type = 'json';
-    ctx.body = doc.toJSON();
+    ctx.body = doc;
   })
   .catch(err => {
     console.log(err);
@@ -150,7 +149,7 @@ async function createPoll(ctx, next) {
 
 async function votePoll(ctx, next) {
   const {id} = ctx.request.body;
-  return pollModel.vote(id)
+  return controller.votePoll(id)
   .then((poll) => {
     ctx.type = 'json';
     ctx.body = poll;
@@ -159,12 +158,8 @@ async function votePoll(ctx, next) {
 
 async function appendPollAnswer(ctx, next) {
   const {id} = ctx.params;
-  const payload = Object.assign(
-    {},
-    {data: ctx.request.body.payload},
-    {user: ctx.state.user});
 
-  return pollModel.addAnswer(id, payload)
+  return controller.appendPollAnswer(id, ctx.request.body.payload, ctx.state.user)
   .then((v) => {
     ctx.status = 200;
     ctx.body = {success: true}

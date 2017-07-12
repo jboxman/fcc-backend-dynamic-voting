@@ -15,7 +15,7 @@ function dbConnect() {
     // If the connection is successful, resolve with the database handle
     const db = mongoose.connection;
     db.once('open', () => {
-      console.log('I am connected.');
+      //console.log('I am connected.');
       resolve(db);
     });
 
