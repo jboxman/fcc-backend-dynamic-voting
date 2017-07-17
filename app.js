@@ -1,5 +1,7 @@
 const dotenv = require('dotenv');
+const debug = require('debug')('fcc-voting');
 
+const config = require('./config/envs');
 // Necessary or calls to mongoose models simply hang forever
 const setupDb = require('./models/index');
 
@@ -15,5 +17,8 @@ if(process.env.NODE_ENV != 'production') {
 }
 
 setupDb().then(() => {
-  require('./server/app')();
+  const app = require('./backend/app');
+  app.listen(config.app.port, () => {
+    debug(`Listening on ${config.app.port}`);
+  });
 });

@@ -5,9 +5,6 @@ const passport = require('koa-passport');
 const session = require('koa-session');
 const logger = require('koa-logger')
 
-const debug = require('debug')('fcc-voting');
-
-const config = require('../config/envs');
 const routes = require('./routes');
 
 require('../util/authentication');
@@ -24,11 +21,5 @@ app.use(passport.session());
 
 app.use(routes.routes());
 app.use(routes.allowedMethods());
-
-if(!module.parent) {
-  app.listen(config.app.port, () => {
-    debug(`Listening on ${config.app.port}`);
-  });
-}
 
 module.exports = app;
