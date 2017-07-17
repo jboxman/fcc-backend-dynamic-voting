@@ -29,7 +29,10 @@ browserSync({
       {
         route: '/api',
         handle: proxy({
-          target: 'http://localhost:4000',
+          // https://github.com/webpack/webpack-dev-server/issues/424#issuecomment-271458094
+          target: 'http://[::1]:4000',
+          secure: false,
+          logLevel: "debug",
           pathRewrite: {
             '^/api': ''
           }

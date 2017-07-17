@@ -15,7 +15,7 @@ const base = {
 const envs = {
   development: {
     app: {
-      port: 3000
+      port: 4000
     },
     mongodb: {
       url: `mongodb://localhost/db_${env}`
@@ -23,7 +23,7 @@ const envs = {
   },
   test: {
     app: {
-      port: 3001
+      port: 4001
     },
     mongodb: {
       url: `mongodb://localhost/db_${env}`
@@ -31,7 +31,7 @@ const envs = {
   },
   production: {
     app: {
-      port: process.env.PORT || 3000
+      port: process.env.PORT || 4000
     },
     mongodb: {
       url: `mongodb://localhost/db_${env}`
