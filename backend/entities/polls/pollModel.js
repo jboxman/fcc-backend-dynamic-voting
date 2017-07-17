@@ -28,6 +28,13 @@ const pollSchema = mongoose.Schema(
     timestamps: true
   });
 
+// https://stackoverflow.com/a/42763286/6732764
+pollSchema.set('toJSON', {
+  virtuals: true,
+  versionKey:false,
+  transform: function (doc, ret) { delete ret._id }
+});
+
 // options, limit, start, order
 pollSchema.statics.findAllPolls = function findAllPolls() {
   // http://stackoverflow.com/questions/19222520/populate-nested-array-in-mongoose
