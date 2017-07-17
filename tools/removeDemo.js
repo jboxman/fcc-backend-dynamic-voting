@@ -6,31 +6,31 @@ import {chalkSuccess} from './chalkConfig';
 /* eslint-disable no-console */
 
 const pathsToRemove = [
-  './src/actions/*',
-  './src/utils',
-  './src/components/*',
-  './src/constants/*',
-  './src/containers/*',
-  './src/images',
-  './src/reducers/*',
-  './src/store/store.spec.js',
-  './src/styles',
-  './src/routes.js',
-  './src/index.js',
+  './frontend/actions/*',
+  './frontend/utils',
+  './frontend/components/*',
+  './frontend/constants/*',
+  './frontend/containers/*',
+  './frontend/images',
+  './frontend/reducers/*',
+  './frontend/store/store.spec.js',
+  './frontend/styles',
+  './frontend/routes.js',
+  './frontend/index.js',
   './tools/removeDemo.js'
 ];
 
 const filesToCreate = [
   {
-    path: './src/components/emptyTest.spec.js',
+    path: './frontend/components/emptyTest.spec.js',
     content: '// Must have at least one test file in this directory or Mocha will throw an error.'
   },
   {
-    path: './src/index.js',
+    path: './frontend/index.js',
     content: '// Set up your application entry point here...'
   },
   {
-    path: './src/reducers/index.js',
+    path: './frontend/reducers/index.js',
     content: '// Set up your root reducer here...\n import { combineReducers } from \'redux\';\n export default combineReducers;'
   }
 ];

@@ -16,12 +16,13 @@ const bundler = webpack(config);
 
 // Run Browsersync and use middleware for Hot Module Replacement
 browserSync({
+  open: false,
   port: 3000,
   ui: {
     port: 3001
   },
   server: {
-    baseDir: 'src',
+    baseDir: 'frontend',
 
     // Proxy API requests
     middleware: [
@@ -66,6 +67,6 @@ browserSync({
   // no need to watch '*.js' here, webpack will take care of it for us,
   // including full page reloads if HMR won't work
   files: [
-    'src/*.html'
+    'frontend/*.html'
   ]
 });
