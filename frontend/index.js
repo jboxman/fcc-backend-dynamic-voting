@@ -5,9 +5,9 @@ import { render } from 'react-dom';
 import { browserHistory } from 'react-router';
 import { AppContainer } from 'react-hot-loader';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import Root from './components/Root';
+import Root from './App/Root';
 
-import configureStore from './store/configureStore';
+import configureStore from './App/configureStore';
 require('./favicon.ico'); // Tell webpack to load favicon.ico
 import './styles/styles.scss'; // Yep, that's right. You can import SASS/CSS files too! Webpack will run the associated loader and plug this into the page.
 import { syncHistoryWithStore } from 'react-router-redux';
@@ -28,8 +28,8 @@ render(
 );
 
 if (module.hot) {
-  module.hot.accept('./components/Root', () => {
-    const NewRoot = require('./components/Root').default;
+  module.hot.accept('./App/Root', () => {
+    const NewRoot = require('./App/Root').default;
     render(
       <AppContainer>
         <NewRoot store={store} history={history} />

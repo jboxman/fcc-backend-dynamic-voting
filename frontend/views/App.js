@@ -8,15 +8,13 @@ import { Link, IndexLink } from 'react-router';
 class App extends React.Component {
 
   componentDidMount() {
-    fetch('/api/test').then(v => console.log(v));
+    fetch('/api/polls').then(v => console.log(v));
   }
 
   render() {
     return (
       <div>
         <IndexLink to="/">Home</IndexLink>
-        {' | '}
-        <Link to="/fuel-savings">Demo App</Link>
         {' | '}
         <Link to="/about">About</Link>
         <br/>
