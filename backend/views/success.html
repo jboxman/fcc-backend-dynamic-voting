@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login successful</title>
+</head>
+<body>
+  <h1>Success</h1>
+  <p>You are authenticated...</p>
+</body>
+<script>
+  document.body.onload = function() {
+    var injectedUser = <%- JSON.stringify(user) %>;
+    window.opener.postMessage(
+      {
+        payload: injectedUser,
+        status: 'success'
+      },
+      window.opener.location
+    );
+
+    /*
+    window.opener.postMessage(
+      { error: 'Login failed' },
+      window.opener.location
+    );
+    */
+  };
+</script>
+</html>

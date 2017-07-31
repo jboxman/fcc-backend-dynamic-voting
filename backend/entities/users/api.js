@@ -26,4 +26,18 @@ router.post('/login', (ctx, next) => {
   })(ctx, next);
 });
 
+router.get('/auth/github',
+  passport.authenticate('github')
+);
+
+// Custom handler that returns the authenticated user object
+router.get('/auth/github/callback', function(ctx) {
+  return passport.authenticate('github', async function(err, user, info) {
+    //ctx.type = 'json'
+    //ctx.body = user
+    await ctx.logIn(user);
+    await ctx.render('success', {user: JSON.stringify(ctx.state.user)});
+  })(ctx);
+});
+
 module.exports = router;

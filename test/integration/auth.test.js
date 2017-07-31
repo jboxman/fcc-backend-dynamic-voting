@@ -1,3 +1,4 @@
+// Deprecated test
 const test = require('tape');
 const agent = require('supertest').agent;
 const sinon = require('sinon');
