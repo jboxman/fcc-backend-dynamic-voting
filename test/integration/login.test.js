@@ -1,3 +1,5 @@
+// Deprecated
+
 //require('leaked-handles');
 
 const test = require('tape');

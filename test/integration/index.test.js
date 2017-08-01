@@ -39,11 +39,7 @@ const createAuthenticatedUser = (done) => {
   const httpServer = app.listen();
   const authenticatedUser = agent(app.callback());
   authenticatedUser
-  .post('/users/login')
-  .send({
-    username: 'jasonb@edseek.com',
-    password: 'test'
-  })
+  .get('/users/auth/github/callback')
   .end((error, resp) => {
     done(authenticatedUser);
     httpServer.close();
@@ -70,7 +66,12 @@ test('app', t => {
     await dbClear(conn);
 
     // collection fixtures would be nice for this
-    defaultUser = await User.create({email: 'jasonb@edseek.com'});
+    defaultUser = await User.create({
+      email: 'jasonb@edseek.com',
+      username: 'jboxman',
+      oauthId: 'any',
+      oauthProvider: 'github'
+    });
     defaultAnswers = [
       {
         createdBy: defaultUser.get('_id').toJSON(),
@@ -95,7 +96,7 @@ test('app', t => {
 
     request
     .get('/')
-    .expect(200)
+    .expect(404)
     .end((err, res) => {
       httpServer.close();
       t.end(err);
@@ -119,9 +120,17 @@ test('app', t => {
         .set('Accept', 'application/json')
         .expect(201);
 
+        if(createReq.body.errors) {
+          throw(new Error('error'));
+        }
+
         viewReq = await request
-        .get(`/polls/view/${createReq.body.data[0]._id}`)
+        .get(`/polls/view/${createReq.body.data[0].id}`)
         .expect(200);
+
+        if(viewReq.body.errors) {
+          throw(new Error('error'));
+        }
 
         t.equal(viewReq.body.data[0].viewCount, 1, 'viewCount should equal 1');
       }

@@ -15,12 +15,14 @@ const userSchema = mongoose.Schema({
   },
   oauthId: {
     type: String,
-    required: true
+    required: true,
+    select: false
   },
   oauthProvider: {
     type: String,
     required: true,
-    enum: ['github']
+    enum: ['github'],
+    select: false
   },
   votedPolls: {
     type: [mongoose.Schema.Types.ObjectId],
