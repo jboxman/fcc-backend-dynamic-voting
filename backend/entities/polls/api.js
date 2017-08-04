@@ -9,6 +9,10 @@ const debug = require('debug')('fcc-voting');
 
 //const pollModel = require('./pollModel');
 const controller = require('./controller');
+const {
+  enforceJSON,
+  isAuthenticated
+} = require('../../helpers');
 
 /*
   ctx.body shape
@@ -22,10 +26,6 @@ const controller = require('./controller');
 const router = new Router({
   prefix: '/polls'
 });
-
-const enforceJSON = (ctx, next) => {
-  return ctx.request.type == 'application/json' ? next() : ctx.status = 400;
-}
 
 const validation = {
   viewPoll: [
@@ -98,12 +98,14 @@ router.get(
 
 router.post(
   '/create',
+  isAuthenticated,
   enforceJSON,
   validator(...validation['createPoll']),
   createPoll);
 
 router.post(
   '/vote',
+  isAuthenticated,
   enforceJSON,
   validator(...validation['votePoll']),
   votePoll);
@@ -116,6 +118,7 @@ router.post(
 */
 router.put(
   '/append/:id',
+  isAuthenticated,
   enforceJSON,
   validator(...validation['appendPollAnswer']),
   appendPollAnswer);
@@ -124,7 +127,6 @@ router.put(
 // Update all of these to use the controller now
 async function viewPoll(ctx, next) {
   const {id} = ctx.params;
-  console.log(id);
   // TODO - throw 400 if id missing
   return controller.viewPoll(id)
   .then((poll) => {

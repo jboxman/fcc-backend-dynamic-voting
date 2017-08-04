@@ -5,7 +5,7 @@ const MockStrategy = require('./mock-strategy').Strategy;
 
 const User = require('../backend/entities/users/userModel');
 
-function cb(accessToken, refreshToken, profile, done) {
+function onSuccess(accessToken, refreshToken, profile, done) {
   // https://stackoverflow.com/questions/20431049/what-is-function-user-findorcreate-doing-and-when-is-it-called-in-passport
   User.findOrCreate(
     {
@@ -31,10 +31,10 @@ function strategyForEnvironment() {
         clientID: process.env.CLIENT_ID,
         clientSecret: process.env.CLIENT_SECRET,
         callbackURL: process.env.CALLBACK_URL
-      }, cb);
+      }, onSuccess);
     break;
     default:
-      strategy = new MockStrategy('github', cb);
+      strategy = new MockStrategy('github', onSuccess);
   }
   return strategy;
 }
