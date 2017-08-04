@@ -56,6 +56,7 @@ pollSchema.statics.addPoll = function addPoll(payload) {
     });
   });
 
+  // https://stackoverflow.com/a/33092800/6732764
   const apoll = new this(poll);
   return apoll.save();
 }

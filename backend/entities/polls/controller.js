@@ -33,7 +33,7 @@ function viewPoll(id) {
 }
 
 async function createPoll(data, user) {
-  const payload = Object.assign({}, data, {createdBy: user._id});
+  const payload = Object.assign({}, data, {createdBy: user.id});
 
   return pollModel.addPoll(payload)
   .then(success)
@@ -51,7 +51,7 @@ async function appendPollAnswer(id, data, user) {
   const payload = Object.assign(
     {},
     {data},
-    {createdBy: user._id});
+    {createdBy: user.id});
 
   return pollModel.addAnswer(id, payload)
   .then(success)
