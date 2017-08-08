@@ -1,0 +1,110 @@
+{
+  "success": true,
+  "data": [
+    {
+      "updatedAt": "2017-07-12T03:30:53.957Z",
+      "createdAt": "2017-07-12T03:30:53.842Z",
+      "question": "What is your name?",
+      "createdBy": {
+        "email": "jasonb@edseek.com",
+        "votedPolls": [
+          
+        ],
+        "id": "596597ed19df2f344273d1e7"
+      },
+      "answers": [
+        {
+          "text": "Bob",
+          "createdBy": {
+            "email": "jasonb@edseek.com",
+            "votedPolls": [
+              
+            ],
+            "id": "596597ed19df2f344273d1e7"
+          },
+          "voteCount": 0,
+          "id": "596597ed19df2f344273d1eb"
+        },
+        {
+          "text": "Frank",
+          "createdBy": {
+            "email": "jasonb@edseek.com",
+            "votedPolls": [
+              
+            ],
+            "id": "596597ed19df2f344273d1e7"
+          },
+          "voteCount": 1,
+          "id": "596597ed19df2f344273d1ea"
+        },
+        {
+          "text": "Jackie",
+          "createdBy": {
+            "email": "jasonb@edseek.com",
+            "votedPolls": [
+              
+            ],
+            "id": "596597ed19df2f344273d1e7"
+          },
+          "voteCount": 0,
+          "id": "596597ed19df2f344273d1e9"
+        }
+      ],
+      "viewCount": 1,
+      "id": "596597ed19df2f344273d1e8"
+    },
+    {
+      "updatedAt": "2017-07-12T19:59:58.838Z",
+      "createdAt": "2017-07-12T19:59:58.838Z",
+      "question": "How are you?",
+      "createdBy": {
+        "email": "user@example.com",
+        "votedPolls": [
+          
+        ],
+        "id": "59667fbe0471d943d5a96cbe"
+      },
+      "answers": [
+        {
+          "text": "Good",
+          "createdBy": {
+            "email": "user@example.com",
+            "votedPolls": [
+              
+            ],
+            "id": "59667fbe0471d943d5a96cbe"
+          },
+          "voteCount": 0,
+          "id": "59667fbe0471d943d5a96cc2"
+        },
+        {
+          "text": "Ok",
+          "createdBy": {
+            "email": "user@example.com",
+            "votedPolls": [
+              
+            ],
+            "id": "59667fbe0471d943d5a96cbe"
+          },
+          "voteCount": 0,
+          "id": "59667fbe0471d943d5a96cc1"
+        },
+        {
+          "text": "Winning",
+          "createdBy": {
+            "email": "user@example.com",
+            "votedPolls": [
+              
+            ],
+            "id": "59667fbe0471d943d5a96cbe"
+          },
+          "voteCount": 0,
+          "id": "59667fbe0471d943d5a96cc0"
+        }
+      ],
+      "viewCount": 0,
+      "id": "59667fbe0471d943d5a96cbf"
+    }
+  ],
+  "count": 2
+}

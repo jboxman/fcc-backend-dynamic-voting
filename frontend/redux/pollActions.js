@@ -1,3 +1,4 @@
+import { pollApi } from '../api';
 import * as pollActionTypes from './pollActionTypes';
 
 export function createPoll(payload = {}) {
@@ -16,7 +17,8 @@ export function deletePoll(payload = {id: null}) {
 
 export function fetchPolls() {
   return {
-    type: pollActionTypes.FETCH
+    type: pollActionTypes.FETCH,
+    promise: pollApi.fetch()
   }
 }
 
