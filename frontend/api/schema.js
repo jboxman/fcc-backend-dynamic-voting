@@ -7,6 +7,6 @@ const getPollSchema = () => {
   return [poll];
 }
 
-export default function(result) {
-  return normalize(result.data, getPollSchema());
+export default function(data) {
+  return normalize(data, getPollSchema());
 };

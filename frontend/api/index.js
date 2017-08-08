@@ -1,13 +1,13 @@
+import axios from 'axios';
+
 import normalizeData from './schema';
-import mockData from '../mocks/data.json';
 
 // Here we can reject the promise if "success": false
 const pollApi = {
   fetch() {
-    return new Promise((fulfill) => {
-      const normalized = normalizeData(mockData);
-      fulfill(normalized);
-    });
+    return axios.get('/api/polls')
+    .then(result => result.data.data)
+    .then(data => normalizeData(data));
   }
 }
 
