@@ -103,6 +103,11 @@ router.post(
   validator(...validation['createPoll']),
   createPoll);
 
+/*
+  This expects the _id of the answer only, rather than
+  the poll _id too. Due to how mongo queries work, this
+  is possible, but confusing in retrospect.
+*/
 router.post(
   '/vote',
   isAuthenticated,
@@ -110,12 +115,6 @@ router.post(
   validator(...validation['votePoll']),
   votePoll);
 
-/*
-  Append a new choice to an existing poll.
-  This expects the _id of the answer only, rather than
-  the poll _id too. Due to how mongo queries work, this
-  is possible, but confusing in retrospect.
-*/
 router.put(
   '/append/:id',
   isAuthenticated,
@@ -156,7 +155,7 @@ async function votePoll(ctx, next) {
     ctx.type = 'json';
     ctx.body = poll;
   });
-}
+};
 
 async function appendPollAnswer(ctx, next) {
   const {id} = ctx.params;

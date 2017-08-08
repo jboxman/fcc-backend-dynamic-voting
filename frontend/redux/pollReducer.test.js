@@ -6,11 +6,11 @@ import {LIFECYCLE, KEY} from 'redux-pack';
 import reducer from './pollReducer';
 import * as Actions from './pollActions';
 import normalizeData from '../api/schema';
-import mockData from '../mocks/data.json';
+import mockData from '../mocks/polls/fetch.json';
 
 const request = new axiosMockAdapter(axios);
 
-const payload = normalizeData(mockData);
+const payload = normalizeData(mockData.data);
 
 // From: https://github.com/lelandrichardson/redux-pack
 // this utility method will make an action that redux pack understands
@@ -18,7 +18,7 @@ async function makePackAction(lifecycle, { type, promise, meta={} }) {
   // Manually set payload to mimick what happens in redux-pack middleware
   return {
     type,
-    payload: await promise,
+    payload: (lifecycle != LIFECYCLE.START) ? await promise : undefined,
     meta: {
       ...meta,
       [KEY.LIFECYCLE]: lifecycle
@@ -52,12 +52,11 @@ test('recipeReducer', t => {
       }
     };
 
+    const action = Actions.fetchPolls();
     const actual = {
-      start: await makePackAction(LIFECYCLE.START, Actions.fetchPolls()),
-      success: await makePackAction(LIFECYCLE.SUCCESS, Actions.fetchPolls())
+      start: await makePackAction(LIFECYCLE.START, action),
+      success: await makePackAction(LIFECYCLE.SUCCESS, action)
     }
-
-    console.log(actual.success);
 
     t.deepEqual(reducer(undefined, actual.start), expected.start, 'on start');
     t.deepEqual(reducer(undefined, actual.success), expected.success, 'on success');
