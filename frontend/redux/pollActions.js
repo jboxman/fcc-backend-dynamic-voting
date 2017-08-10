@@ -1,14 +1,15 @@
 import { pollApi } from '../api';
 import * as pollActionTypes from './pollActionTypes';
 
-export function createPoll(payload = {}) {
+export function createPoll(poll = {}) {
   return {
     type: pollActionTypes.CREATE,
-    payload
+    promise: pollApi.create(poll)
   }
 }
 
-export function deletePoll(payload = {id: null}) {
+// TODO - implement
+export function deletePoll({id}) {
   return {
     type: pollActionTypes.DELETE,
     payload
@@ -22,16 +23,18 @@ export function fetchPolls() {
   }
 }
 
-export function filterPolls(payload = {createdBy: null}) {
+export function filterPolls({createdBy}) {
   return {
     type: pollActionTypes.FILTER,
-    payload
+    payload: {
+      createdBy
+    }
   }
 }
 
-export function addPollChoice(payload = {}) {
+export function addPollChoice({id, answer}) {
   return {
     type: pollActionTypes.ADD_CHOICE,
-    payload
+    promise: pollApi.addAnswer(id, answer)
   }
 }

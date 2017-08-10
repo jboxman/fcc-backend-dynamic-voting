@@ -1,0 +1,13 @@
+{
+  "payload": {
+    "question":"Is it time to eat?",
+    "answers": [
+      {
+        "text": "Yes"
+      },
+      {
+        "text": "No"
+      }
+    ]
+  }
+}

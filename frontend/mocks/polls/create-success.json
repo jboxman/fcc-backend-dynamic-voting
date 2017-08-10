@@ -1,0 +1,52 @@
+{
+  "success": true,
+  "data": [
+    {
+      "updatedAt": "2017-08-10T18:26:29.461Z",
+      "createdAt": "2017-08-10T18:26:29.461Z",
+      "question": "Is it time to eat?",
+      "createdBy": {
+        "email": "jasonb@edseek.com",
+        "username": "jboxman",
+        "avatarUrl": "https:\/\/avatars2.githubusercontent.com\/u\/354496?v=4",
+        "votedPolls": [
+          
+        ],
+        "id": "598b4fd82efdbcda1af834e4"
+      },
+      "answers": [
+        {
+          "text": "Yes",
+          "createdBy": {
+            "email": "jasonb@edseek.com",
+            "username": "jboxman",
+            "avatarUrl": "https:\/\/avatars2.githubusercontent.com\/u\/354496?v=4",
+            "votedPolls": [
+              
+            ],
+            "id": "598b4fd82efdbcda1af834e4"
+          },
+          "voteCount": 0,
+          "id": "598ca555f1b9abf821669e3c"
+        },
+        {
+          "text": "No",
+          "createdBy": {
+            "email": "jasonb@edseek.com",
+            "username": "jboxman",
+            "avatarUrl": "https:\/\/avatars2.githubusercontent.com\/u\/354496?v=4",
+            "votedPolls": [
+              
+            ],
+            "id": "598b4fd82efdbcda1af834e4"
+          },
+          "voteCount": 0,
+          "id": "598ca555f1b9abf821669e3b"
+        }
+      ],
+      "viewCount": 0,
+      "id": "598ca555f1b9abf821669e3a"
+    }
+  ],
+  "count": 1
+}
