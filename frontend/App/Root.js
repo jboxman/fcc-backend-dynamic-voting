@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import routes from '../routes';
-import { Router } from 'react-router';
+
+import App from '../views/App';
 
 export default class Root extends Component {
   render() {
-    const { store, history } = this.props;
+    const {store, history} = this.props;
     return (
       <Provider store={store}>
-        <Router history={history} routes={routes} />
+        <App history={history} />
       </Provider>
     );
   }
