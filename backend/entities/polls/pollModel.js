@@ -58,7 +58,13 @@ pollSchema.statics.addPoll = function addPoll(payload) {
 
   // https://stackoverflow.com/a/33092800/6732764
   const apoll = new this(poll);
-  return apoll.save();
+  return apoll.save().then((doc) => {
+    return doc.populate({
+          path: 'createdBy'
+      }).populate({
+        path: 'answers.createdBy'
+    }).execPopulate();
+  });
 }
 
 pollSchema.statics.removePoll = function removePoll(id) {
