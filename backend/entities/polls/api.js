@@ -7,21 +7,11 @@ const {
 } = require('koa-context-validator');
 const debug = require('debug')('fcc-voting');
 
-//const pollModel = require('./pollModel');
 const controller = require('./controller');
 const {
   enforceJSON,
   isAuthenticated
 } = require('../../helpers');
-
-/*
-  ctx.body shape
-  {
-    payload: {
-      // Actual data
-    }
-  }
-*/
 
 const router = new Router({
   prefix: '/polls'
@@ -56,7 +46,7 @@ const validation = {
   ],
   votePoll: [
     {
-       body: object({
+       params: object({
         id: string().required()
       })
     }
@@ -109,7 +99,7 @@ router.post(
   is possible, but confusing in retrospect.
 */
 router.post(
-  '/vote',
+  '/vote/:id',
   isAuthenticated,
   enforceJSON,
   validator(...validation['votePoll']),
@@ -122,8 +112,7 @@ router.put(
   validator(...validation['appendPollAnswer']),
   appendPollAnswer);
 
-// TODO -
-// Update all of these to use the controller now
+// Unused
 async function viewPoll(ctx, next) {
   const {id} = ctx.params;
   // TODO - throw 400 if id missing
@@ -149,7 +138,7 @@ async function createPoll(ctx, next) {
 };
 
 async function votePoll(ctx, next) {
-  const {id} = ctx.request.body;
+  const {id} = ctx.params;
   return controller.votePoll(id)
   .then((poll) => {
     ctx.type = 'json';
