@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "users": {
+      "596597ed19df2f344273d1e7": {
+        "email": "jasonb@edseek.com",
+        "votedPolls": [],
+        "id": "596597ed19df2f344273d1e7"
+      },
+      "59667fbe0471d943d5a96cbe": {
+        "email": "user@example.com",
+        "votedPolls": [],
+        "id": "59667fbe0471d943d5a96cbe"
+      }
+    },
+    "answers": {
+      "596597ed19df2f344273d1eb": {
+        "text": "Bob",
+        "createdBy": "596597ed19df2f344273d1e7",
+        "voteCount": 77,
+        "id": "596597ed19df2f344273d1eb"
+      },
+      "596597ed19df2f344273d1ea": {
+        "text": "Frank",
+        "createdBy": "596597ed19df2f344273d1e7",
+        "voteCount": 109,
+        "id": "596597ed19df2f344273d1ea"
+      },
+      "596597ed19df2f344273d1e9": {
+        "text": "Jackie",
+        "createdBy": "596597ed19df2f344273d1e7",
+        "voteCount": 97,
+        "id": "596597ed19df2f344273d1e9"
+      },
+      "59667fbe0471d943d5a96cc2": {
+        "text": "Good",
+        "createdBy": "59667fbe0471d943d5a96cbe",
+        "voteCount": 109,
+        "id": "59667fbe0471d943d5a96cc2"
+      },
+      "59667fbe0471d943d5a96cc1": {
+        "text": "Ok",
+        "createdBy": "59667fbe0471d943d5a96cbe",
+        "voteCount": 33,
+        "id": "59667fbe0471d943d5a96cc1"
+      },
+      "59667fbe0471d943d5a96cc0": {
+        "text": "Winning",
+        "createdBy": "59667fbe0471d943d5a96cbe",
+        "voteCount": 70,
+        "id": "59667fbe0471d943d5a96cc0"
+      }
+    },
+    "polls": {
+      "596597ed19df2f344273d1e8": {
+        "updatedAt": "2017-07-12T03:30:53.957Z",
+        "createdAt": "2017-07-12T03:30:53.842Z",
+        "question": "What is your name?",
+        "createdBy": "596597ed19df2f344273d1e7",
+        "answers": [
+          "596597ed19df2f344273d1eb",
+          "596597ed19df2f344273d1ea",
+          "596597ed19df2f344273d1e9"
+        ],
+        "viewCount": 1,
+        "id": "596597ed19df2f344273d1e8"
+      },
+      "59667fbe0471d943d5a96cbf": {
+        "updatedAt": "2017-07-12T19:59:58.838Z",
+        "createdAt": "2017-07-12T19:59:58.838Z",
+        "question": "How are you?",
+        "createdBy": "59667fbe0471d943d5a96cbe",
+        "answers": [
+          "59667fbe0471d943d5a96cc2",
+          "59667fbe0471d943d5a96cc1",
+          "59667fbe0471d943d5a96cc0"
+        ],
+        "viewCount": 0,
+        "id": "59667fbe0471d943d5a96cbf"
+      }
+    }
+  },
+  "result": [
+    "596597ed19df2f344273d1e8",
+    "59667fbe0471d943d5a96cbf"
+  ]
+}
