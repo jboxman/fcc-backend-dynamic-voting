@@ -20,12 +20,13 @@ const pollApi = {
 
   create(payload) {
     return axios.post('/api/polls/create', {payload})
-    .then(result => result.data.data);
+    .then(result => result.data.data)
+    .then(data => normalizeData(data));
   },
 
   // TODO - use empty body instead for this
   vote(id) {
-    return axios.post('/api/polls/vote', {id})
+    return axios.post(`/api/polls/vote/${id}`)
     .then(result => result.data.data);
   },
 
