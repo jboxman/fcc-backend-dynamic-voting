@@ -36,7 +36,7 @@
     "eslint-plugin-import": "^2.7.0",
     "extract-text-webpack-plugin": "^2.1.2",
     "factory-girl": "^4.3.0",
-    "formik": "^0.7.2",
+    "formik": "^0.8.9",
     "koa": "^2.3.0",
     "koa-body": "^1.4.0",
     "koa-bodyparser": "^4.2.0",
