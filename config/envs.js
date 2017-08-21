@@ -3,7 +3,7 @@
 const path = require('path');
 const _ = require('lodash');
 
-const env = process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || 'development';
 
 const base = {
   app: {
@@ -15,7 +15,8 @@ const base = {
 const envs = {
   development: {
     app: {
-      port: 4000
+      port: 4000,
+      oauthUrl: '/api/users/auth/github/callback'
     },
     mongodb: {
       url: `mongodb://localhost/db_${env}`
@@ -23,7 +24,8 @@ const envs = {
   },
   test: {
     app: {
-      port: 4001
+      port: 4001,
+      oauthUrl: '/api/users/auth/github/callback'
     },
     mongodb: {
       url: `mongodb://localhost/db_${env}`
@@ -31,7 +33,9 @@ const envs = {
   },
   production: {
     app: {
-      port: process.env.PORT || 4000
+      port: process.env.PORT || 4000,
+      oauthUrl: '/api/users/auth/github',
+      prefix: '/api'
     },
     mongodb: {
       url: `mongodb://localhost/db_${env}`
