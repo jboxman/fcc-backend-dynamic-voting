@@ -1,13 +1,21 @@
 import { handle } from 'redux-pack';
 import * as actionTypes from './pollActionTypes';
 
+import { denormalize } from 'normalizr';
+import { getPollSchema } from '../api/schema';
+
+export const STATE_KEY = 'polls';
+
 // polls.data.(entities|result)
 // TODO - add visiblePolls array
 
 export const initialState = {
   isLoading: false,
   visiblePolls: [],
-  addPoll: {},
+  addPoll: {
+    question: '',
+    answers: ['', '']
+  },
   data: {
     entities: {},
     result: []
@@ -88,6 +96,7 @@ export default function pollReducer(state = initialState, action = {}) {
             newState.data.entities.answers,
             payload.entities.answers);
 
+          console.log(newState);
           return newState;
         }
       });
@@ -114,3 +123,16 @@ export default function pollReducer(state = initialState, action = {}) {
       return state;
   }
 }
+
+export const pollSelectorByUser = (state, createdBy = false) => {
+  const {entities, result} = state[STATE_KEY].data;
+  if(!createdBy) {
+    return result;
+  }
+
+  return Object.keys(entities.polls)
+    .filter(poll => {
+      return entities.polls[poll].createdBy == createdBy ? true : false
+    })
+    .map(poll => entities.polls[poll].id);
+};
