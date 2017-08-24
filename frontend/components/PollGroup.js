@@ -1,18 +1,15 @@
 import React from 'react';
 import propTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 import {
   Card,
   Icon,
   Button
-} from 'semantic-ui-react'
+} from 'semantic-ui-react';
 
 import Poll from './Poll';
 
-const data = require('../mocks/output.json');
-
-class PollGroup extends React.Component {
+export default class PollGroup extends React.Component {
   renderPolls() {
     const {polls} = this.props;
     return polls.map(id => <Poll key={id} pollId={id} />);
@@ -27,13 +24,6 @@ class PollGroup extends React.Component {
   }
 }
 
-const mapStateToProps = (state, ownProps) => ({
-  polls: state.polls.data.result
-});
-
-const mapDispatchToProps = () => ({});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PollGroup);
+PollGroup.propTypes = {
+  polls: propTypes.arrayOf(propTypes.string).isRequired
+};
