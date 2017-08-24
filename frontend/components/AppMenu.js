@@ -3,43 +3,36 @@ const config = require('../../config/envs');
 import React from 'react';
 import propTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux'
+import { bindActionCreators } from 'redux';
+import { Link } from 'react-router';
 
 import {
   Input,
   Menu
 } from 'semantic-ui-react';
 
-import popup from '../../util/openWindow';
+import loginTab from '../../util/openWindow';
 import * as userActions from '../redux/userActions';
 
 class AppMenu extends React.Component {
   constructor() {
       super();
-      this.state = {};
-      // This mysteriously fails with
-      // warning: setstate(...): can only update a mounted or mounting component
-      //this.handleItemClick = this.handleItemClick.bind(this);
-      //console.log(this);
   }
 
-  // dispatch to user login
   handleLogIn(e, {name}) {
-    const promise = popup(config.app.oauthUrl);
-    promise.then(user => this.props.actions.injectUser(user));
+    const msg = loginTab(config.app.oauthUrl);
+    msg.then(user => {
+      this.props.actions.injectUser(user);
+    });
   }
 
   handleLogOut(e, {name}) {
     this.props.actions.logoutUser();
   }
 
-  handleItemClick(e, {name}) {
-    console.log(name);
-    this.setState({activeItem: name});
-  }
+  // TODO - Add UserMenu with user specific choices when loggedIn only
 
   render() {
-    const {activeItem} = this.state;
     const {isAuthenticated} = this.props;
 
     const loginButton =  isAuthenticated ?
@@ -49,25 +42,13 @@ class AppMenu extends React.Component {
 
     return (
       <Menu>
-        <Menu.Item
-          name='Add poll'
-          onClick={this.handleItemClick.bind(this)}
-        >
+        <Menu.Item as={Link} to='/create'>
           Add poll
         </Menu.Item>
-
-        <Menu.Item
-          name='My polls'
-          onClick={this.handleItemClick}
-        >
+        <Menu.Item as={Link} to='/'>
           My polls
         </Menu.Item>
-
-        <Menu.Item
-          name='All polls'
-          active={activeItem === 'upcomingEvents'}
-          onClick={this.handleItemClick}
-        >
+        <Menu.Item as={Link} to='/'>
           All polls
         </Menu.Item>
         <Menu.Menu position='right'>
@@ -78,9 +59,9 @@ class AppMenu extends React.Component {
   }
 }
 
-AppMenu.defaultProps = {
-  isAuthenticated: true
-}
+AppMenu.PropTypes = {
+  isAuthenticated: propTypes.bool
+};
 
 const mapStateToProps = state => ({
   isAuthenticated: state.currentUser.isAuthenticated
