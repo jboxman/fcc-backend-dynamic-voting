@@ -3,7 +3,8 @@ import propTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state, ownProps) => ({
-  isAuthenticated: state.currentUser.isAuthenticated
+  isAuthenticated: state.currentUser.isAuthenticated,
+  currentUser: state.currentUser.user
 });
 
 export default function withAuthStatus(WrappedComponent) {
@@ -13,9 +14,8 @@ export default function withAuthStatus(WrappedComponent) {
     }
 
     render() {
-      const {isAuthenticated, ...rest} = this.props;
-      console.log(isAuthenticated);
-      return <WrappedComponent isAuthenticated={isAuthenticated} {...rest} />;
+      const {isAuthenticated, currentUser, ...rest} = this.props;
+      return <WrappedComponent isAuthenticated={isAuthenticated} currentUser={currentUser} {...rest} />;
     }
   });
 };
