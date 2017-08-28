@@ -70,25 +70,7 @@ export default function pollReducer(state = initialState, action = {}) {
             }
           };
 
-          // Add user if not currently known to us
-          if(state.data.entities.users
-            && !state.data.entities.users.hasOwnProperty(payload.entities.polls[id].createdBy)) {
-            newState = {
-              ...newState,
-              data: {
-                ...newState.data,
-                entities: {
-                  ...newState.data.entities,
-                  users: {
-                    ...newState.data.entities.users,
-                    [payload.entities.polls[id].createdBy]: {
-                      ...payload.entities.users[id]
-                    }
-                  }
-                }
-              }
-            }
-          }
+          newState = updateUsersEntity(id, newState, payload);
 
           // A new answer will never be known to us
           newState.data.entities.answers = Object.assign(
@@ -109,9 +91,22 @@ export default function pollReducer(state = initialState, action = {}) {
 
     // merge in new answer
     case actionTypes.ADD_CHOICE:
-      return handle(state, action, {
-
-      });
+      const id = payload.result[0];
+      let newState = {
+        ...state,
+        entities: {
+          ...state.data.entities,
+          ...Object.assign({}, state.data.entities.answers, payload.entities.answers),
+          polls: {
+            ...state.data.entities.polls,
+            [id]: {
+              ...state.data.entities.polls[id],
+              answers: [...payload.entities.polls[id].answers]
+            }
+          }
+        }
+      }
+      return newState;
 
     // manage visiblePolls array
     case actionTypes.FILTER:
@@ -123,6 +118,31 @@ export default function pollReducer(state = initialState, action = {}) {
       return state;
   }
 }
+
+const updateUsersEntity = (id, state, payload) => {
+  // Add user if not currently known to us
+  const {users} = state.data.entities;
+  if(users
+    && !users.hasOwnProperty(payload.entities.polls[id].createdBy)) {
+    state = {
+      ...state,
+      data: {
+        ...state.data,
+        entities: {
+          ...state.data.entities,
+          users: {
+            ...state.data.entities.users,
+            [payload.entities.polls[id].createdBy]: {
+              ...payload.entities.users[id]
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return state;
+};
 
 export const pollSelectorByUser = (state, createdBy = false) => {
   const {entities, result} = state[STATE_KEY].data;

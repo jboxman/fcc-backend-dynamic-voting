@@ -32,9 +32,11 @@ export function filterPolls({createdBy}) {
   }
 }
 
-export function addPollChoice({id, answer}) {
+export function addPollChoice(poll) {
   return {
     type: pollActionTypes.ADD_CHOICE,
-    promise: pollApi.addAnswer(id, answer)
+    payload: {
+      ...poll
+    }
   }
 }

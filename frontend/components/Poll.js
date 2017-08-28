@@ -59,18 +59,11 @@ class Poll extends React.Component {
           <PollVotingChart pollId={poll.id} poll={poll} />
         </Card.Content>
         <Card.Content>
-          <Form>
-            <Form.Group grouped>
-              <label>Choices</label>
-          {
-            this.renderFormCheckboxes()
-          }
-            </Form.Group>
-          </Form>
+          <PollChoices pollId={pollId} isAuthenticated={isAuthenticated} />
         </Card.Content>
         <Card.Content>
           <Image avatar src="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=" />
-          Poll by <strong>{poll.createdBy.email}</strong>
+          Poll by <strong>{poll.createdBy.username}</strong>
         </Card.Content>
         <Card.Content extra>
           <div className='ui three buttons'>
