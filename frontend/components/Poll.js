@@ -11,6 +11,7 @@ import {
 } from 'semantic-ui-react';
 
 import PollVotingChart from './PollVotingChart';
+import PollChoices from './PollChoices';
 
 // TODO - refactor
 import { denormalize } from 'normalizr';
@@ -59,7 +60,7 @@ class Poll extends React.Component {
           <PollVotingChart pollId={poll.id} poll={poll} />
         </Card.Content>
         <Card.Content>
-          <PollChoices pollId={pollId} isAuthenticated={isAuthenticated} />
+          <PollChoices pollId={poll.id} answers={poll.answers} isAuthenticated={isAuthenticated} />
         </Card.Content>
         <Card.Content>
           <Image avatar src="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=" />

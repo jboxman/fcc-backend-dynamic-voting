@@ -46,7 +46,7 @@ class PollChoices extends React.Component {
   }
 
   renderFormCheckboxes() {
-    const {answers} = this.props;    
+    const {answers} = this.props;
     return answers.map((v, i) => {
       return (
         <Form.Checkbox key={v.id} label={`${i+1}. ${v.text}`} />
