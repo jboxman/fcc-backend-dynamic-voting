@@ -38,7 +38,7 @@ const envs = {
       prefix: '/api'
     },
     mongodb: {
-      url: `mongodb://localhost/db_${env}`
+      url: process.env.MONGODB_URI || `mongodb://localhost/db_${env}` // From heroku config
     }
   }
 };

@@ -17,6 +17,18 @@ async function seed() {
     process.exit(1);
   }
 
+  /*
+    Use use this to seed the database for testing in heroku.
+
+    "scripts": {
+      "heroku-postbuild": "echo This runs afterwards."
+    }
+
+    or (for more temporary usage)
+
+    heroku config:set MY_CUSTOM_VALUE=foobar
+  */
+
   // Eventually will include fields from github oauth2
   const user = await User.create({
     username: 'user',
@@ -30,13 +42,16 @@ async function seed() {
     question: 'How are you?',
     answers: [
       {
-        text: 'Good'
+        text: 'Good',
+        voteCount: 3
       },
       {
-        text: 'Ok'
+        text: 'Ok',
+        voteCount: 2
       },
       {
-        text: 'Winning'
+        text: 'Winning',
+        voteCount: 5
       }
     ],
     createdBy: user._id.toJSON()
@@ -45,13 +60,16 @@ async function seed() {
     question: 'What day is it?',
     answers: [
       {
-        text: 'Saturday'
+        text: 'Saturday',
+        voteCount: 3
       },
       {
-        text: 'Saturday'
+        text: 'Saturday',
+        voteCount: 2
       },
       {
-        text: 'Saturday'
+        text: 'Saturday',
+        voteCount: 1
       }
     ],
     createdBy: user._id.toJSON()

@@ -17,10 +17,12 @@ import axiosMockAdapter from 'axios-mock-adapter';
 import { pollApi } from './api';
 import { initialState } from './redux/pollReducer';
 
-const payload = require('./mocks/polls/fetch.json');
-const request = new axiosMockAdapter(axios);
+if(process.env.NODE_ENV == 'development') {
+  const payload = require('./mocks/polls/fetch.json');
+  const request = new axiosMockAdapter(axios);
 
-request.onGet(/\/polls/).reply(200, payload);
+  request.onGet(/\/polls/).reply(200, payload);
+}
 
 // initialState is undefined unless provided here
 const getData = async () => await pollApi.fetch();
