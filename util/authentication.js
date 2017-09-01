@@ -43,6 +43,7 @@ passport.serializeUser(function(user, done) {
   done(null, user.id);
 });
 
+// TODO - Sad path, user ID doesn't exist, possibly because it was deleted
 passport.deserializeUser(async function(id, done) {
   try {
     const user = await User.findById(id).exec();
