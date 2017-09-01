@@ -89,19 +89,42 @@ export default function pollReducer(state = initialState, action = {}) {
 
       });
 
+    case actionTypes.VOTE:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          entities: {
+            ...state.data.entities,
+            answers: {
+              ...state.data.entities.answers,
+              [payload.answerId]: {
+                ...state.data.entities.answers[payload.answerId],
+                voteCount: (state.data.entities.answers[payload.answerId].voteCount + 1)
+              }
+            }
+          }
+        }
+      };
+
     // merge in new answer
     case actionTypes.ADD_CHOICE:
       const id = payload.result[0];
       let newState = {
         ...state,
-        entities: {
-          ...state.data.entities,
-          ...Object.assign({}, state.data.entities.answers, payload.entities.answers),
-          polls: {
-            ...state.data.entities.polls,
-            [id]: {
-              ...state.data.entities.polls[id],
-              answers: [...payload.entities.polls[id].answers]
+        data: {
+          ...state.data,
+          entities: {
+            ...state.data.entities,
+            answers: {
+              ...Object.assign({}, state.data.entities.answers, payload.entities.answers),
+            },
+            polls: {
+              ...state.data.entities.polls,
+              [id]: {
+                ...state.data.entities.polls[id],
+                answers: [...payload.entities.polls[id].answers]
+              }
             }
           }
         }

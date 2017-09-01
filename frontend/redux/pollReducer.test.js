@@ -1,9 +1,9 @@
 import test from 'tape';
 import axios from 'axios';
 import axiosMockAdapter from 'axios-mock-adapter';
-import {LIFECYCLE, KEY} from 'redux-pack';
+import { LIFECYCLE, KEY } from 'redux-pack';
 
-import reducer, {initialState as pollInitialState} from './pollReducer';
+import reducer, { initialState as pollInitialState } from './pollReducer';
 import * as Actions from './pollActions';
 import normalizeData from '../api/schema';
 

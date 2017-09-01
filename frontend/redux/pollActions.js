@@ -23,6 +23,15 @@ export function fetchPolls() {
   }
 }
 
+export function voteInPoll(id) {
+  return {
+    type: pollActionTypes.VOTE,
+    payload: {
+      answerId: id
+    }
+  }
+}
+
 export function filterPolls({createdBy}) {
   return {
     type: pollActionTypes.FILTER,
