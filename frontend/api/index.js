@@ -31,7 +31,7 @@ const pollApi = {
   },
 
   addAnswer(id, payload) {
-    return axios.post(`/api/polls/append/${id}`, {payload})
+    return axios.put(`/api/polls/append/${id}`, {payload})
     .then(result => result.data.data)
     .then(data => normalizeData(data));
   }

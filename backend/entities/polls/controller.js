@@ -50,7 +50,7 @@ async function votePoll(id) {
 async function appendPollAnswer(id, data, user) {
   const payload = Object.assign(
     {},
-    {data},
+    data,
     {createdBy: user.id});
 
   return pollModel.addAnswer(id, payload)

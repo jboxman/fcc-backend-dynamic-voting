@@ -96,7 +96,7 @@ test('app', t => {
 
     request
     .get('/')
-    .expect(404)
+    .expect(200)
     .end((err, res) => {
       httpServer.close();
       t.end(err);
@@ -167,6 +167,8 @@ test('app', t => {
       .send({payload})
       .expect(200)
       .end((err, res) => {
+        // Confirm docs match
+        t.equal(res.body.data[0].id, doc._id.toJSON());
         t.end(err);
       });
     });
@@ -183,8 +185,8 @@ test('app', t => {
       const promise = getDoc().next().value;
       promise.then(doc => {
         request
-        .post(`/polls/vote/`)
-        .send({id: `${doc.answers[1]._id}`})
+        .post(`/polls/vote/${doc.answers[1]._id}`)
+        .send({})
         .set('Accept', 'application/json')
         .expect(200)
         .end((err, res) => {

@@ -109,7 +109,7 @@ pollSchema.statics.vote = function vote(answerId) {
 }
 
 pollSchema.statics.addAnswer = function addAnswer(id, answer) {
-  return this.findOneAndUpdate(
+  return this.findByIdAndUpdate(
     id,
     {
       $push: {

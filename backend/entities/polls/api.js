@@ -17,6 +17,7 @@ const router = new Router({
   prefix: '/polls'
 });
 
+// BUG - 'ValidationError: "0" is not allowed' without stripUnknown
 const validation = {
   viewPoll: [
     {
@@ -49,7 +50,11 @@ const validation = {
        params: object({
         id: string().required()
       })
-    }
+    },
+    {
+      // Silently allows unknown values
+      stripUnknown: true
+    }    
   ],
   appendPollAnswer: [
     {
@@ -150,9 +155,9 @@ async function appendPollAnswer(ctx, next) {
   const {id} = ctx.params;
 
   return controller.appendPollAnswer(id, ctx.request.body.payload, ctx.state.user)
-  .then((v) => {
-    ctx.status = 200;
-    ctx.body = {success: true}
+  .then((poll) => {
+    ctx.type = 'json';
+    ctx.body = poll;
   })
   .catch((v) => {
     ctx.status = 500;
