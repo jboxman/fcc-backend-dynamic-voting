@@ -105,8 +105,7 @@ router.post(
 */
 router.post(
   '/vote/:id',
-  isAuthenticated,
-  enforceJSON,
+  //enforceJSON,
   validator(...validation['votePoll']),
   votePoll);
 
