@@ -22,7 +22,7 @@ class PollVotingChart extends React.Component {
     this.canvasEl = el;
   }
 
-  compoundWillUnmount() {
+  componentWillUnmount() {
     this.Chart.destroy();
   }
 
@@ -33,6 +33,12 @@ class PollVotingChart extends React.Component {
       type: 'pie',
       data: this.getData()
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // https://stackoverflow.com/a/36945550/6732764
+    this.Chart.config.data = this.getData();
+    this.Chart.update();
   }
 
   // Derived from https://stackoverflow.com/a/39884692/6732764
@@ -52,7 +58,7 @@ class PollVotingChart extends React.Component {
   render() {
     return (
       <div className='ui container' style={wrapperStyle}>
-        <canvas ref={(el) => {this.canvasEl = el;}}></canvas>
+        <canvas ref={(el) => {this.canvasEl = el}}></canvas>
       </div>
     );
   }
