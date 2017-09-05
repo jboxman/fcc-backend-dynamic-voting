@@ -33,17 +33,15 @@ class Poll extends React.Component {
     });
   }
 
-  // TODO - only allow add answer or delete of OWN polls, by ID
   renderActionButtons() {
     const {isAuthenticated} = this.props;
     const buttons = [];
+    buttons.push(<Button key={3} basic color='blue'>Share</Button>);
     if(isAuthenticated) {
       buttons.push(
-        <Button key={1} basic color='green'>Add choice</Button>,
         <Button key={2} basic color='red'>Delete poll</Button>
       );
     }
-    buttons.push(<Button key={3} basic color='blue'>Share</Button>);
     return buttons;
   }
 
