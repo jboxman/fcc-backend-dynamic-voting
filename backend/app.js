@@ -30,9 +30,12 @@ app.use(views(`${__dirname}/views`, {
 app.use(passport.initialize());
 app.use(passport.session());
 
-// TODO - use koa-mount so /api works in PRODUCTION
 app.use(mount(process.env.NODE_ENV == 'production' ? '/api' : '/', routes.routes()));
 app.use(routes.allowedMethods());
+
+// TODO - catch validation errors
+// https://github.com/chentsulin/koa-context-validator/blob/master/src/__tests__/index.spec.js#L126
+// error.name == ValidationError
 
 app.use(static(path.join(__dirname, '../dist')));
 
