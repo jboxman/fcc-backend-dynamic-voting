@@ -4,7 +4,9 @@ import * as pollActionTypes from './pollActionTypes';
 export function createPoll(poll = {}) {
   return {
     type: pollActionTypes.CREATE,
-    promise: pollApi.create(poll)
+    payload: {
+      ...poll
+    }
   }
 }
 
