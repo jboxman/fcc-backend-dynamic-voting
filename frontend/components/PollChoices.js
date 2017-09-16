@@ -16,12 +16,25 @@ class PollChoices extends React.Component {
   constructor(props) {
     super(props);
 
-    const {editMode} = this.props;
+    //const {editMode} = this.props;
     this.state = {
-      editMode
+      editMode: false,
+      pollChoice: null
     };
 
     this.inputEl = null;
+  }
+
+  // Get active radio button
+  handleVote() {
+    const {pollChoice} = this.state;
+    pollApi.vote(pollChoice).then(data => {
+      this.props.actions.voteInPoll(pollChoice);
+    });
+  }
+
+  handleRadioSelection(e, {value}) {
+    this.setState({pollChoice: value});
   }
 
   // Unmanaged field
@@ -47,29 +60,35 @@ class PollChoices extends React.Component {
 
   renderFormCheckboxes() {
     const {answers} = this.props;
+    const {pollChoice} = this.state;
     return answers.map((v, i) => {
       return (
-        <Form.Checkbox key={v.id} label={`${i+1}. ${v.text}`} />
+        <Form.Radio
+          key={v.id} label={`${i+1}. ${v.text} (${v.voteCount})`} value={v.id}
+          checked={pollChoice == v.id} onChange={this.handleRadioSelection.bind(this)}/>
       );
     });
   }
 
   // This has our submit
   renderInputField() {
-    const {isAuthenticated} = this.props;
+    const {isAuthenticated, answers, maxAnswers} = this.props;
     const {editMode} = this.state;
 
     if(isAuthenticated) {
       if(!editMode) {
-        return <Button onClick={e => this.setState({editMode: true})}>Add</Button>;
+         return answers.length <= maxAnswers ?
+          <Button onClick={e => this.setState({editMode: true})}>Add</Button>
+          :
+          null;
       }
       else {
         return (
-          <Form.Group inline>
+          <div>
           <Form.Field><Input ref={el => this.inputEl = el} /></Form.Field>
           <Button onClick={this.handleAddChoice.bind(this)}>Save</Button>
           <Button onClick={e => this.setState({editMode: false})}>Cancel</Button>
-          </Form.Group>
+          </div>
         );
       }
     }
@@ -88,7 +107,7 @@ class PollChoices extends React.Component {
             this.renderInputField()
           }
             </Form.Group>
-            <Button type='submit'>Vote</Button>
+            <Button type='submit' disabled={!this.state.pollChoice} onClick={this.handleVote.bind(this)}>Vote</Button>
           </Form>
     );
   }
@@ -99,13 +118,13 @@ PollChoices.propTypes = {
   answers: PropTypes.array.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   maxAnswers: PropTypes.number.isRequired,
-  editMode: PropTypes.bool.isRequired
+  //editMode: PropTypes.bool.isRequired
 };
 
 PollChoices.defaultProps = {
   maxAnswers: 5,
   isAuthenticated: false,
-  editMode: true
+  //editMode: true
 };
 
 const mapDispatchToProps = dispatch => ({
